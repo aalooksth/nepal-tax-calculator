@@ -1,0 +1,267 @@
+// calculator.js
+
+export const TAX_RATES = {
+  "2082_83": {
+    single: [
+      { limit: 500000, rate: 0.01, isSST: true },
+      { limit: 700000, rate: 0.10 },
+      { limit: 1000000, rate: 0.20 },
+      { limit: 2000000, rate: 0.30 },
+      { limit: 5000000, rate: 0.36 },
+      { limit: Infinity, rate: 0.39 }
+    ],
+    married: [
+      { limit: 600000, rate: 0.01, isSST: true },
+      { limit: 800000, rate: 0.10 },
+      { limit: 1100000, rate: 0.20 },
+      { limit: 2000000, rate: 0.30 },
+      { limit: 5000000, rate: 0.36 },
+      { limit: Infinity, rate: 0.39 }
+    ]
+  },
+  "2083_84": {
+    // FY 2083/84 budget merges single and married into a single unified schedule
+    unified: [
+      { limit: 1000000, rate: 0.01, isSST: true },
+      { limit: 1500000, rate: 0.10 },
+      { limit: 2500000, rate: 0.20 },
+      { limit: 4000000, rate: 0.27 },
+      { limit: Infinity, rate: 0.29 }
+    ]
+  }
+};
+
+export const REMOTE_AREA_DEDUCTIONS = {
+  'A': 50000,
+  'B': 40000,
+  'C': 30000,
+  'D': 20000,
+  'E': 10000,
+  'None': 0
+};
+
+export const LIMITS = {
+  retirementMaxFraction: 1 / 3,
+  retirementMaxAmount: 500000,
+  lifeInsuranceMax: 40000,
+  healthInsuranceMax: 20000,
+  medicalExpensesCreditFraction: 0.15,
+  medicalExpensesCreditMax: 1500,
+  femaleTaxRebateRate: 0.10
+};
+
+/**
+ * Internal helper to compute tax variables given an assessable income level.
+ */
+function computeTaxLiability({
+  assessableIncome,
+  totalRetirementContribution,
+  allowedLifeInsurance,
+  allowedHealthInsurance,
+  allowedRemoteArea,
+  slabs,
+  useSSF,
+  medicalExpenses,
+  femaleTaxpayer,
+  filingStatus,
+  year
+}) {
+  const maxRetirementDeductionLimit = Math.min(
+    assessableIncome * LIMITS.retirementMaxFraction,
+    LIMITS.retirementMaxAmount
+  );
+  const allowedRetirementDeduction = Math.min(totalRetirementContribution, maxRetirementDeductionLimit);
+
+  const totalOtherDeductions = allowedLifeInsurance + allowedHealthInsurance + allowedRemoteArea;
+  const taxableIncome = Math.max(0, assessableIncome - allowedRetirementDeduction - totalOtherDeductions);
+
+  let remainingTaxableIncome = taxableIncome;
+  let previousLimit = 0;
+  let baseTaxLiability = 0;
+  const taxBreakdown = [];
+
+  for (let i = 0; i < slabs.length; i++) {
+    const slab = slabs[i];
+    const slabLimit = slab.limit;
+    let slabRate = slab.rate;
+
+    // Waive 1% SST (Social Security Tax) if contributing to SSF
+    if (slab.isSST && useSSF) {
+      slabRate = 0.0;
+    }
+
+    const slabRangeSize = slabLimit - previousLimit;
+    const incomeInThisSlab = Math.min(remainingTaxableIncome, slabRangeSize);
+
+    if (incomeInThisSlab > 0) {
+      const taxForSlab = incomeInThisSlab * slabRate;
+      baseTaxLiability += taxForSlab;
+      taxBreakdown.push({
+        range: `${previousLimit.toLocaleString('en-NP')} - ${slabLimit === Infinity ? 'Above' : slabLimit.toLocaleString('en-NP')}`,
+        income: incomeInThisSlab,
+        rate: slabRate,
+        tax: taxForSlab
+      });
+      remainingTaxableIncome -= incomeInThisSlab;
+    }
+
+    if (remainingTaxableIncome <= 0) break;
+    previousLimit = slabLimit;
+  }
+
+  // Approved Medical Expenses Credit
+  const rawMedicalCredit = (medicalExpenses || 0) * LIMITS.medicalExpensesCreditFraction;
+  const allowedMedicalCredit = Math.min(rawMedicalCredit, LIMITS.medicalExpensesCreditMax);
+  const taxAfterMedicalCredit = Math.max(0, baseTaxLiability - allowedMedicalCredit);
+
+  // Female Tax Rebate
+  let femaleRebate = 0;
+  const canApplyFemaleRebate = femaleTaxpayer && (year === '2083_84' || filingStatus === 'single');
+  if (canApplyFemaleRebate) {
+    femaleRebate = taxAfterMedicalCredit * LIMITS.femaleTaxRebateRate;
+  }
+  const finalTaxLiability = Math.max(0, taxAfterMedicalCredit - femaleRebate);
+
+  return {
+    taxableIncome,
+    baseTaxLiability,
+    allowedMedicalCredit,
+    femaleRebate,
+    finalTaxLiability,
+    allowedRetirementDeduction,
+    taxBreakdown
+  };
+}
+
+/**
+ * Calculates Nepal Income Tax, Net Cash-in-Hand, and Retirement Savings.
+ */
+export function calculateTax({
+  year, // '2082_83' or '2083_84'
+  filingStatus, // 'single' or 'married'
+  monthlyBasicSalary,
+  monthlyAllowances,
+  annualBonus,
+  useSSF,
+  useEPF,
+  citMonthly,
+  lifeInsurancePremium,
+  healthInsurancePremium,
+  remoteArea, // 'A', 'B', 'C', 'D', 'E', or 'None'
+  femaleTaxpayer,
+  medicalExpenses,
+  splitBonus
+}) {
+  // 1. Initial calculations
+  const basicSalaryAnnual = (monthlyBasicSalary || 0) * 12;
+  const allowancesAnnual = (monthlyAllowances || 0) * 12;
+  const bonusAnnual = annualBonus || 0;
+
+  // SSF Contributions (11% employee, 20% employer of basic salary)
+  const employeeSSFAnnual = useSSF ? basicSalaryAnnual * 0.11 : 0;
+  const employerSSFAnnual = useSSF ? basicSalaryAnnual * 0.20 : 0;
+
+  // EPF Contributions (Standard is 10% employee, 10% employer of basic salary)
+  const employeeEPFAnnual = useEPF ? basicSalaryAnnual * 0.10 : 0;
+  const employerEPFAnnual = useEPF ? basicSalaryAnnual * 0.10 : 0;
+
+  // CIT Contributions
+  const citAnnual = (citMonthly || 0) * 12;
+
+  // 2. Allowed other deductions (independent of income)
+  const allowedLifeInsurance = Math.min(lifeInsurancePremium || 0, LIMITS.lifeInsuranceMax);
+  const allowedHealthInsurance = Math.min(healthInsurancePremium || 0, LIMITS.healthInsuranceMax);
+  const allowedRemoteArea = REMOTE_AREA_DEDUCTIONS[remoteArea] || 0;
+
+  // Slabs configuration
+  let slabs;
+  if (year === '2082_83') {
+    slabs = TAX_RATES['2082_83'][filingStatus] || TAX_RATES['2082_83']['single'];
+  } else {
+    slabs = TAX_RATES['2083_84']['unified'];
+  }
+
+  // 3. Compute tax WITH bonus (Actual total annual tax)
+  const grossCashSalaryAnnual = basicSalaryAnnual + allowancesAnnual + bonusAnnual;
+  const assessableIncome = grossCashSalaryAnnual + employerSSFAnnual + employerEPFAnnual;
+  const totalRetirementContribution = employeeSSFAnnual + employerSSFAnnual + employeeEPFAnnual + employerEPFAnnual + citAnnual;
+
+  const resultWithBonus = computeTaxLiability({
+    assessableIncome,
+    totalRetirementContribution,
+    allowedLifeInsurance,
+    allowedHealthInsurance,
+    allowedRemoteArea,
+    slabs,
+    useSSF,
+    medicalExpenses,
+    femaleTaxpayer,
+    filingStatus,
+    year
+  });
+
+  // 4. Compute tax WITHOUT bonus (Base tax strictly on base salary + allowances)
+  const grossCashSalaryNoBonus = basicSalaryAnnual + allowancesAnnual;
+  const assessableIncomeNoBonus = grossCashSalaryNoBonus + employerSSFAnnual + employerEPFAnnual;
+
+  const resultNoBonus = computeTaxLiability({
+    assessableIncome: assessableIncomeNoBonus,
+    totalRetirementContribution, // retirement deposits are kept at the actual total
+    allowedLifeInsurance,
+    allowedHealthInsurance,
+    allowedRemoteArea,
+    slabs,
+    useSSF,
+    medicalExpenses,
+    femaleTaxpayer,
+    filingStatus,
+    year
+  });
+
+  // 5. Final Outputs
+  const finalTaxLiability = resultWithBonus.finalTaxLiability;
+  const taxWithoutBonus = resultNoBonus.finalTaxLiability;
+
+  const employeeOutofPocketDeductions = employeeSSFAnnual + employeeEPFAnnual + citAnnual;
+  const netCashInHandAnnual = Math.max(0, grossCashSalaryAnnual - employeeOutofPocketDeductions - finalTaxLiability);
+
+  // If splitBonus is true: distribute total net cash equally.
+  // If splitBonus is false: monthly cash in hand is monthly base + allowances minus monthly retirement and base tax without bonus.
+  const netCashInHandMonthly = splitBonus
+    ? netCashInHandAnnual / 12
+    : Math.max(0, ((monthlyBasicSalary || 0) + (monthlyAllowances || 0)) - (employeeSSFAnnual / 12 + employeeEPFAnnual / 12 + (citMonthly || 0)) - (taxWithoutBonus / 12));
+
+  const totalRetirementSavingsAnnual = employeeSSFAnnual + employerSSFAnnual + employeeEPFAnnual + employerEPFAnnual + citAnnual;
+
+  const costToCompany = grossCashSalaryAnnual + employerSSFAnnual + employerEPFAnnual;
+  const marginalTaxOnBonus = finalTaxLiability - taxWithoutBonus;
+  const bonusAfterTax = Math.max(0, bonusAnnual - marginalTaxOnBonus);
+
+  return {
+    assessableIncome,
+    costToCompany,
+    marginalTaxOnBonus,
+    bonusAfterTax,
+    allowedRetirementDeduction: resultWithBonus.allowedRetirementDeduction,
+    allowedLifeInsurance,
+    allowedHealthInsurance,
+    allowedRemoteArea,
+    taxableIncome: resultWithBonus.taxableIncome,
+    baseTaxLiability: resultWithBonus.baseTaxLiability,
+    allowedMedicalCredit: resultWithBonus.allowedMedicalCredit,
+    femaleRebate: resultWithBonus.femaleRebate,
+    finalTaxLiability,
+    taxWithoutBonus,
+    netCashInHandAnnual,
+    netCashInHandMonthly,
+    totalRetirementSavingsAnnual,
+    employeeSSFAnnual,
+    employerSSFAnnual,
+    employeeEPFAnnual,
+    employerEPFAnnual,
+    citAnnual,
+    taxBreakdown: resultWithBonus.taxBreakdown,
+    grossCashSalaryAnnual,
+    employeeOutofPocketDeductions
+  };
+}

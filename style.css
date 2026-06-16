@@ -665,13 +665,23 @@ footer a {
 
 /* --- Control Row & View Mode Toggles --- */
 .control-row {
+  position: sticky;
+  top: var(--header-height, 72px);
+  z-index: 90;
+  background: var(--md-sys-color-background);
+  background-image: var(--app-gradient-background);
+  width: 100%;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: var(--elevation-1);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 16px;
-  margin-bottom: 8px;
-  align-self: center;
+  margin-bottom: 24px;
 }
 
 .view-mode-container {
@@ -1044,5 +1054,24 @@ footer a {
 .ai-callout-card .material-icons {
   font-size: 28px;
   color: var(--md-sys-color-primary);
+}
+
+/* --- YCOTEK Active Theme Color Scheme --- */
+body.ycotek-active {
+  --md-sys-color-primary: #00796B;
+  --md-sys-color-primary-container: #B2DFDB;
+  --md-sys-color-on-primary-container: #004D40;
+  --app-gradient-primary: linear-gradient(135deg, #00796B 0%, #004D40 100%);
+  --app-gradient-background: linear-gradient(180deg, #E0F2F1 0%, #B2DFDB 100%);
+  background-image: var(--app-gradient-background);
+}
+
+[data-theme="dark"] body.ycotek-active {
+  --md-sys-color-primary: #80CBC4;
+  --md-sys-color-primary-container: #004D40;
+  --md-sys-color-on-primary-container: #E0F2F1;
+  --app-gradient-primary: linear-gradient(135deg, #004D40 0%, #002B2B 100%);
+  --app-gradient-background: linear-gradient(180deg, #071717 0%, #020C0C 100%);
+  background-image: var(--app-gradient-background);
 }
 

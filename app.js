@@ -35,6 +35,7 @@ const mainContentLayout = document.getElementById('main-content-layout');
 const btnCopyToB = document.getElementById('btn-copy-to-b');
 const btnCopyToA = document.getElementById('btn-copy-to-a');
 const btnReset = document.getElementById('btn-reset');
+const ycotekSwitch = document.getElementById('ycotek-mode');
 const structureTabsContainer = document.getElementById('structure-tabs-container');
 
 // Comparison selector (New vs New / Existing vs New)
@@ -245,6 +246,10 @@ btnReset.addEventListener('click', () => {
   currentViewMode = 'compare';
   diffModeSelect.value = '82_vs_83';
   currentNavTab = 'calc';
+  if (ycotekSwitch) {
+    ycotekSwitch.selected = false;
+    applyYcotekMode(false);
+  }
 
   // Sync navigation view
   switchNavTab('calc');
@@ -253,6 +258,14 @@ btnReset.addEventListener('click', () => {
 
 // Watch comparison basis select dropdown
 diffModeSelect.addEventListener('change', triggerRecalculation);
+
+// Watch YCOTEK Mode switch
+if (ycotekSwitch) {
+  ycotekSwitch.addEventListener('change', (e) => {
+    applyYcotekMode(e.target.selected);
+    triggerRecalculation();
+  });
+}
 
 // --- State Persistence ---
 function saveInputsToLocalStorage() {
@@ -287,7 +300,8 @@ function saveInputsToLocalStorage() {
     lifeB: lifeInputB.value,
     healthB: healthInputB.value,
     medicalB: medicalInputB.value,
-    femaleB: femaleSwitchB.selected
+    femaleB: femaleSwitchB.selected,
+    ycotekMode: ycotekSwitch ? ycotekSwitch.selected : false
   };
   localStorage.setItem('nepal_tax_calc_state', JSON.stringify(state));
 }
@@ -346,6 +360,11 @@ function loadInputsFromLocalStorage() {
     if (state.healthB !== undefined) healthInputB.value = state.healthB;
     if (state.medicalB !== undefined) medicalInputB.value = state.medicalB;
     if (state.femaleB !== undefined) femaleSwitchB.selected = state.femaleB;
+
+    if (state.ycotekMode !== undefined && ycotekSwitch) {
+      ycotekSwitch.selected = state.ycotekMode;
+      applyYcotekMode(state.ycotekMode);
+    }
 
   } catch (e) {
     console.error("Failed to parse persisted state", e);
@@ -433,6 +452,68 @@ inputsToWatch.forEach(input => {
   sw.addEventListener('change', triggerRecalculation);
 });
 
+// --- YCOTEK Mode Helper ---
+function applyYcotekMode(isYcotek) {
+  const labelAllowanceA = document.querySelector('label[for="allowance-a"]');
+  const labelAllowanceB = document.querySelector('label[for="allowance-b"]');
+  const labelCitA = document.querySelector('label[for="cit-a"]');
+  const labelCitB = document.querySelector('label[for="cit-b"]');
+
+  if (isYcotek) {
+    document.body.classList.add('ycotek-active');
+    if (labelAllowanceA) labelAllowanceA.textContent = "Allowance + Add allowance (Lunch, Transport, Mobile, ...)";
+    if (labelAllowanceB) labelAllowanceB.textContent = "Allowance + Add allowance (Lunch, Transport, Mobile, ...)";
+    if (labelCitA) labelCitA.textContent = "CIT (Staff's Contribution)";
+    if (labelCitB) labelCitB.textContent = "CIT (Staff's Contribution)";
+
+    splitBonusSwitchA.selected = false;
+    splitBonusSwitchB.selected = false;
+
+    remoteSelectA.value = 'None';
+    remoteSelectB.value = 'None';
+    remoteSelectA.disabled = true;
+    remoteSelectB.disabled = true;
+
+    healthInputA.value = 0;
+    healthInputB.value = 0;
+    healthInputA.disabled = true;
+    healthInputB.disabled = true;
+
+    medicalInputA.value = 0;
+    medicalInputB.value = 0;
+    medicalInputA.disabled = true;
+    medicalInputB.disabled = true;
+
+    ssfSwitchA.selected = false;
+    ssfSwitchB.selected = false;
+    ssfSwitchA.disabled = true;
+    ssfSwitchB.disabled = true;
+
+    epfSwitchA.selected = true;
+    epfSwitchB.selected = true;
+    epfSwitchA.disabled = true;
+    epfSwitchB.disabled = true;
+  } else {
+    document.body.classList.remove('ycotek-active');
+    if (labelAllowanceA) labelAllowanceA.textContent = "Monthly Allowances (NPR)";
+    if (labelAllowanceB) labelAllowanceB.textContent = "Monthly Allowances (NPR)";
+    if (labelCitA) labelCitA.textContent = "Monthly Citizen Investment Trust (CIT) Contribution (NPR)";
+    if (labelCitB) labelCitB.textContent = "Monthly Citizen Investment Trust (CIT) Contribution (NPR)";
+
+    remoteSelectA.disabled = false;
+    remoteSelectB.disabled = false;
+    healthInputA.disabled = false;
+    healthInputB.disabled = false;
+    medicalInputA.disabled = false;
+    medicalInputB.disabled = false;
+
+    ssfSwitchA.disabled = false;
+    ssfSwitchB.disabled = false;
+    epfSwitchA.disabled = false;
+    epfSwitchB.disabled = false;
+  }
+}
+
 // --- Core Controller Calculation ---
 function triggerRecalculation() {
   // Update structure tab buttons active state
@@ -509,16 +590,23 @@ function triggerRecalculation() {
     }
   }
 
+  const isYcotek = ycotekSwitch ? ycotekSwitch.selected : false;
+  const basicSalaryValA = parseFloat(basicInputA.value) || 0;
+  let citValA = parseFloat(citInputA.value) || 0;
+  if (isYcotek) {
+    citValA = Math.max(0, citValA - (basicSalaryValA * 0.10));
+  }
+
   // Read Profile A inputs
   const inputsA = {
-    monthlyBasicSalary: parseFloat(basicInputA.value) || 0,
+    monthlyBasicSalary: basicSalaryValA,
     monthlyAllowances: parseFloat(allowanceInputA.value) || 0,
     annualBonus: parseFloat(bonusInputA.value) || 0,
     filingStatus: statusSwitchA.selected ? 'married' : 'single',
     remoteArea: remoteSelectA.value,
     useSSF: ssfSwitchA.selected,
     useEPF: epfSwitchA.selected,
-    citMonthly: parseFloat(citInputA.value) || 0,
+    citMonthly: citValA,
     lifeInsurancePremium: parseFloat(lifeInputA.value) || 0,
     healthInsurancePremium: parseFloat(healthInputA.value) || 0,
     medicalExpenses: parseFloat(medicalInputA.value) || 0,
@@ -531,15 +619,20 @@ function triggerRecalculation() {
   if (currentViewMode !== 'compare' || currentTab === 'same') {
     inputsB = { ...inputsA };
   } else {
+    const basicSalaryValB = parseFloat(basicInputB.value) || 0;
+    let citValB = parseFloat(citInputB.value) || 0;
+    if (isYcotek) {
+      citValB = Math.max(0, citValB - (basicSalaryValB * 0.10));
+    }
     inputsB = {
-      monthlyBasicSalary: parseFloat(basicInputB.value) || 0,
+      monthlyBasicSalary: basicSalaryValB,
       monthlyAllowances: parseFloat(allowanceInputB.value) || 0,
       annualBonus: parseFloat(bonusInputB.value) || 0,
       filingStatus: statusSwitchB.selected ? 'married' : 'single',
       remoteArea: remoteSelectB.value,
       useSSF: ssfSwitchB.selected,
       useEPF: epfSwitchB.selected,
-      citMonthly: parseFloat(citInputB.value) || 0,
+      citMonthly: citValB,
       lifeInsurancePremium: parseFloat(lifeInputB.value) || 0,
       healthInsurancePremium: parseFloat(healthInputB.value) || 0,
       medicalExpenses: parseFloat(medicalInputB.value) || 0,
@@ -844,8 +937,20 @@ function drawDonutChart(svgId, results) {
   `;
 }
 
+// --- Sticky Header Height Calculation ---
+function updateHeaderHeight() {
+  const header = document.querySelector('header');
+  if (header) {
+    const rect = header.getBoundingClientRect();
+    document.documentElement.style.setProperty('--header-height', `${rect.height}px`);
+  }
+}
+window.addEventListener('load', updateHeaderHeight);
+window.addEventListener('resize', updateHeaderHeight);
+
 // --- Initialize App ---
 initTheme();
 loadInputsFromLocalStorage();
 triggerRecalculation();
+updateHeaderHeight();
 console.log('Nepal Income Tax Calculator Controller initialized!');

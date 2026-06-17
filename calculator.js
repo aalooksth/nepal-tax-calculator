@@ -150,12 +150,21 @@ export function calculateTax({
   remoteArea, // 'A', 'B', 'C', 'D', 'E', or 'None'
   femaleTaxpayer,
   medicalExpenses,
-  splitBonus
+  splitBonus,
+  monthlyFreelanceIncome,
+  annualOtherIncome
 }) {
   // 1. Initial calculations
   const basicSalaryAnnual = (monthlyBasicSalary || 0) * 12;
   const allowancesAnnual = (monthlyAllowances || 0) * 12;
   const bonusAnnual = annualBonus || 0;
+  const freelanceAnnual = (monthlyFreelanceIncome || 0) * 12;
+  const otherAnnual = annualOtherIncome || 0;
+
+  // TDS Calculations
+  const freelanceTDS = freelanceAnnual * 0.15;
+  const otherTDS = otherAnnual * 0.10;
+  const tdsPaidSource = freelanceTDS + otherTDS;
 
   // SSF Contributions (11% employee, 20% employer of basic salary)
   const employeeSSFAnnual = useSSF ? basicSalaryAnnual * 0.11 : 0;
@@ -182,7 +191,7 @@ export function calculateTax({
   }
 
   // 3. Compute tax WITH bonus (Actual total annual tax)
-  const grossCashSalaryAnnual = basicSalaryAnnual + allowancesAnnual + bonusAnnual;
+  const grossCashSalaryAnnual = basicSalaryAnnual + allowancesAnnual + bonusAnnual + freelanceAnnual + otherAnnual;
   const assessableIncome = grossCashSalaryAnnual + employerSSFAnnual + employerEPFAnnual;
   const totalRetirementContribution = employeeSSFAnnual + employerSSFAnnual + employeeEPFAnnual + employerEPFAnnual + citAnnual;
 
@@ -200,8 +209,8 @@ export function calculateTax({
     year
   });
 
-  // 4. Compute tax WITHOUT bonus (Base tax strictly on base salary + allowances)
-  const grossCashSalaryNoBonus = basicSalaryAnnual + allowancesAnnual;
+  // 4. Compute tax WITHOUT bonus (Base tax strictly on base salary + allowances + freelance + other)
+  const grossCashSalaryNoBonus = basicSalaryAnnual + allowancesAnnual + freelanceAnnual + otherAnnual;
   const assessableIncomeNoBonus = grossCashSalaryNoBonus + employerSSFAnnual + employerEPFAnnual;
 
   const resultNoBonus = computeTaxLiability({
@@ -222,14 +231,18 @@ export function calculateTax({
   const finalTaxLiability = resultWithBonus.finalTaxLiability;
   const taxWithoutBonus = resultNoBonus.finalTaxLiability;
 
+  // Net Tax Payable after TDS is credited
+  const netTaxPayable = finalTaxLiability - tdsPaidSource;
+
   const employeeOutofPocketDeductions = employeeSSFAnnual + employeeEPFAnnual + citAnnual;
   const netCashInHandAnnual = Math.max(0, grossCashSalaryAnnual - employeeOutofPocketDeductions - finalTaxLiability);
 
   // If splitBonus is true: distribute total net cash equally.
-  // If splitBonus is false: monthly cash in hand is monthly base + allowances minus monthly retirement and base tax without bonus.
+  // If splitBonus is false: monthly cash in hand is monthly base + allowances + freelance minus monthly retirement and base tax without bonus.
+  // Note: freelance TDS (15%) is also deducted monthly at source for cash flow.
   const netCashInHandMonthly = splitBonus
     ? netCashInHandAnnual / 12
-    : Math.max(0, ((monthlyBasicSalary || 0) + (monthlyAllowances || 0)) - (employeeSSFAnnual / 12 + employeeEPFAnnual / 12 + (citMonthly || 0)) - (taxWithoutBonus / 12));
+    : Math.max(0, ((monthlyBasicSalary || 0) + (monthlyAllowances || 0) + (monthlyFreelanceIncome || 0)) - (employeeSSFAnnual / 12 + employeeEPFAnnual / 12 + (citMonthly || 0)) - (taxWithoutBonus / 12) - (freelanceTDS / 12));
 
   const totalRetirementSavingsAnnual = employeeSSFAnnual + employerSSFAnnual + employeeEPFAnnual + employerEPFAnnual + citAnnual;
 
@@ -252,6 +265,7 @@ export function calculateTax({
     femaleRebate: resultWithBonus.femaleRebate,
     finalTaxLiability,
     taxWithoutBonus,
+    netTaxPayable,
     netCashInHandAnnual,
     netCashInHandMonthly,
     totalRetirementSavingsAnnual,
@@ -262,6 +276,11 @@ export function calculateTax({
     citAnnual,
     taxBreakdown: resultWithBonus.taxBreakdown,
     grossCashSalaryAnnual,
-    employeeOutofPocketDeductions
+    employeeOutofPocketDeductions,
+    freelanceAnnual,
+    otherAnnual,
+    freelanceTDS,
+    otherTDS,
+    tdsPaidSource
   };
 }

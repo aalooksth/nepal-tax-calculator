@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'nepal-tax-calc-v2';
+const CACHE_NAME = 'nepal-tax-calc-v4';
 const ASSETS = [
   './',
   './index.html',

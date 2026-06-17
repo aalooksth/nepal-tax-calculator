@@ -16,9 +16,11 @@ const bannerInstallBtn = document.getElementById('banner-install-btn');
 
 // Top Navigation Elements
 const navCalcBtn = document.getElementById('nav-calc');
+const navNegotiateBtn = document.getElementById('nav-negotiate');
 const navFeaturesBtn = document.getElementById('nav-features');
 const navAiBtn = document.getElementById('nav-ai');
 const calculatorView = document.getElementById('calculator-view');
+const negotiateView = document.getElementById('negotiate-view');
 const featuresView = document.getElementById('features-view');
 const aiUseView = document.getElementById('ai-use-view');
 
@@ -31,10 +33,12 @@ const tabSameBtn = document.getElementById('tab-same');
 const tabDiffBtn = document.getElementById('tab-diff');
 const mainContentLayout = document.getElementById('main-content-layout');
 
-// Copy Buttons, Reset Button and Tabs Container
+// Copy Buttons, Reset Button, Share/Export Buttons and Tabs Container
 const btnCopyToB = document.getElementById('btn-copy-to-b');
 const btnCopyToA = document.getElementById('btn-copy-to-a');
 const btnReset = document.getElementById('btn-reset');
+const btnShare = document.getElementById('btn-share');
+const btnExportPdf = document.getElementById('btn-export-pdf');
 const ycotekSwitch = document.getElementById('ycotek-mode');
 const structureTabsContainer = document.getElementById('structure-tabs-container');
 
@@ -48,6 +52,8 @@ const allowanceInputA = document.getElementById('allowance-a');
 const bonusInputA = document.getElementById('bonus-a');
 const splitBonusSwitchA = document.getElementById('split-bonus-a');
 const statusSwitchA = document.getElementById('status-a'); // switch checkbox
+const freelanceInputA = document.getElementById('freelance-a');
+const otherInputA = document.getElementById('other-a');
 const remoteSelectA = document.getElementById('remote-a');
 const ssfSwitchA = document.getElementById('ssf-a');
 const epfSwitchA = document.getElementById('epf-a');
@@ -64,6 +70,8 @@ const allowanceInputB = document.getElementById('allowance-b');
 const bonusInputB = document.getElementById('bonus-b');
 const splitBonusSwitchB = document.getElementById('split-bonus-b');
 const statusSwitchB = document.getElementById('status-b'); // switch checkbox
+const freelanceInputB = document.getElementById('freelance-b');
+const otherInputB = document.getElementById('other-b');
 const remoteSelectB = document.getElementById('remote-b');
 const ssfSwitchB = document.getElementById('ssf-b');
 const epfSwitchB = document.getElementById('epf-b');
@@ -73,6 +81,46 @@ const healthInputB = document.getElementById('health-b');
 const medicalInputB = document.getElementById('medical-b');
 const femaleSwitchB = document.getElementById('female-b');
 
+// Negotiation Mode elements
+const negoBaseProfile = document.getElementById('nego-base-profile');
+const negoBasicType = document.getElementById('nego-basic-type');
+const negoBasicAction = document.getElementById('nego-basic-action');
+const negoBasicVal = document.getElementById('nego-basic-val');
+const negoAllowanceType = document.getElementById('nego-allowance-type');
+const negoAllowanceAction = document.getElementById('nego-allowance-action');
+const negoAllowanceVal = document.getElementById('nego-allowance-val');
+
+// Negotiation result elements
+const negoCashMonthlyBase = document.getElementById('nego-cash-monthly-base');
+const negoCashAnnualBase = document.getElementById('nego-cash-annual-base');
+const negoCashMonthlyNoteBase = document.getElementById('nego-cash-monthly-note-base');
+const negoTaxMonthlyBase = document.getElementById('nego-tax-monthly-base');
+const negoTaxAnnualBase = document.getElementById('nego-tax-annual-base');
+const negoTaxMonthlyNoteBase = document.getElementById('nego-tax-monthly-note-base');
+const negoCtcMonthlyBase = document.getElementById('nego-ctc-monthly-base');
+const negoCtcAnnualBase = document.getElementById('nego-ctc-annual-base');
+const negoCtcMonthlyNoteBase = document.getElementById('nego-ctc-monthly-note-base');
+const negoSavingsMonthlyBase = document.getElementById('nego-savings-monthly-base');
+const negoSavingsAnnualBase = document.getElementById('nego-savings-annual-base');
+const negoSlabBarContainerBase = document.getElementById('nego-slab-bar-container-base');
+const negoSlabBarLegendBase = document.getElementById('nego-slab-bar-legend-base');
+
+const negoCashMonthlyNego = document.getElementById('nego-cash-monthly-nego');
+const negoCashAnnualNego = document.getElementById('nego-cash-annual-nego');
+const negoCashMonthlyNoteNego = document.getElementById('nego-cash-monthly-note-nego');
+const negoTaxMonthlyNego = document.getElementById('nego-tax-monthly-nego');
+const negoTaxAnnualNego = document.getElementById('nego-tax-annual-nego');
+const negoTaxMonthlyNoteNego = document.getElementById('nego-tax-monthly-note-nego');
+const negoCtcMonthlyNego = document.getElementById('nego-ctc-monthly-nego');
+const negoCtcAnnualNego = document.getElementById('nego-ctc-annual-nego');
+const negoCtcMonthlyNoteNego = document.getElementById('nego-ctc-monthly-note-nego');
+const negoSavingsMonthlyNego = document.getElementById('nego-savings-monthly-nego');
+const negoSavingsAnnualNego = document.getElementById('nego-savings-annual-nego');
+const negoSlabBarContainerNego = document.getElementById('nego-slab-bar-container-nego');
+const negoSlabBarLegendNego = document.getElementById('nego-slab-bar-legend-nego');
+
+const negoComparisonTableBody = document.getElementById('nego-comparison-table-body');
+
 // Result elements (General layout containers)
 const savingCalloutEl = document.getElementById('saving-callout');
 const savingCalloutTextEl = document.getElementById('saving-callout-text');
@@ -81,6 +129,14 @@ const savingCalloutValueEl = document.getElementById('saving-callout-value');
 const comparisonTableBody = document.getElementById('comparison-table-body');
 const slabBreakdown82El = document.getElementById('slab-breakdown-82');
 const slabBreakdown83El = document.getElementById('slab-breakdown-83');
+
+const slabBar82El = document.getElementById('slab-bar-container-82');
+const slabLegend82El = document.getElementById('slab-bar-legend-82');
+const slabBar83El = document.getElementById('slab-bar-container-83');
+const slabLegend83El = document.getElementById('slab-bar-legend-83');
+
+const optTipsCard = document.getElementById('optimization-tips-card');
+const optTipsContent = document.getElementById('optimization-tips-content');
 
 const tableHeaderA = document.getElementById('table-hdr-a');
 const tableHeaderB = document.getElementById('table-hdr-b');
@@ -181,6 +237,8 @@ btnCopyToB.addEventListener('click', () => {
   bonusInputB.value = bonusInputA.value;
   splitBonusSwitchB.selected = splitBonusSwitchA.selected;
   statusSwitchB.selected = statusSwitchA.selected;
+  freelanceInputB.value = freelanceInputA.value;
+  otherInputB.value = otherInputA.value;
   remoteSelectB.value = remoteSelectA.value;
   ssfSwitchB.selected = ssfSwitchA.selected;
   epfSwitchB.selected = epfSwitchA.selected;
@@ -198,6 +256,8 @@ btnCopyToA.addEventListener('click', () => {
   bonusInputA.value = bonusInputB.value;
   splitBonusSwitchA.selected = splitBonusSwitchB.selected;
   statusSwitchA.selected = statusSwitchB.selected;
+  freelanceInputA.value = freelanceInputB.value;
+  otherInputA.value = otherInputB.value;
   remoteSelectA.value = remoteSelectB.value;
   ssfSwitchA.selected = ssfSwitchB.selected;
   epfSwitchA.selected = epfSwitchB.selected;
@@ -212,34 +272,47 @@ btnCopyToA.addEventListener('click', () => {
 // --- Reset Calculator Handler ---
 btnReset.addEventListener('click', () => {
   // Reset all Profile A values
-  basicInputA.value = 75000;
-  allowanceInputA.value = 15000;
-  bonusInputA.value = 100000;
+  basicInputA.value = '';
+  allowanceInputA.value = '';
+  bonusInputA.value = '';
   splitBonusSwitchA.selected = false;
   statusSwitchA.selected = false;
+  freelanceInputA.value = '';
+  otherInputA.value = '';
   remoteSelectA.value = 'None';
   ssfSwitchA.selected = true;
   epfSwitchA.selected = false;
-  citInputA.value = 0;
-  lifeInputA.value = 25000;
-  healthInputA.value = 0;
-  medicalInputA.value = 0;
+  citInputA.value = '';
+  lifeInputA.value = '';
+  healthInputA.value = '';
+  medicalInputA.value = '';
   femaleSwitchA.selected = false;
 
   // Reset all Profile B values
-  basicInputB.value = 90000;
-  allowanceInputB.value = 20000;
-  bonusInputB.value = 120000;
+  basicInputB.value = '';
+  allowanceInputB.value = '';
+  bonusInputB.value = '';
   splitBonusSwitchB.selected = false;
   statusSwitchB.selected = false;
+  freelanceInputB.value = '';
+  otherInputB.value = '';
   remoteSelectB.value = 'None';
   ssfSwitchB.selected = true;
   epfSwitchB.selected = false;
-  citInputB.value = 0;
-  lifeInputB.value = 25000;
-  healthInputB.value = 0;
-  medicalInputB.value = 0;
+  citInputB.value = '';
+  lifeInputB.value = '';
+  healthInputB.value = '';
+  medicalInputB.value = '';
   femaleSwitchB.selected = false;
+
+  // Reset Negotiation adjustments
+  negoBaseProfile.value = 'profileA_83';
+  negoBasicType.value = 'percent';
+  negoBasicAction.value = 'increase';
+  negoBasicVal.value = '';
+  negoAllowanceType.value = 'percent';
+  negoAllowanceAction.value = 'increase';
+  negoAllowanceVal.value = '';
 
   // Reset states
   currentTab = 'same';
@@ -279,6 +352,8 @@ function saveInputsToLocalStorage() {
     bonusA: bonusInputA.value,
     splitBonusA: splitBonusSwitchA.selected,
     statusA: statusSwitchA.selected,
+    freelanceA: freelanceInputA.value,
+    otherA: otherInputA.value,
     remoteA: remoteSelectA.value,
     ssfA: ssfSwitchA.selected,
     epfA: epfSwitchA.selected,
@@ -293,6 +368,8 @@ function saveInputsToLocalStorage() {
     bonusB: bonusInputB.value,
     splitBonusB: splitBonusSwitchB.selected,
     statusB: statusSwitchB.selected,
+    freelanceB: freelanceInputB.value,
+    otherB: otherInputB.value,
     remoteB: remoteSelectB.value,
     ssfB: ssfSwitchB.selected,
     epfB: epfSwitchB.selected,
@@ -301,7 +378,16 @@ function saveInputsToLocalStorage() {
     healthB: healthInputB.value,
     medicalB: medicalInputB.value,
     femaleB: femaleSwitchB.selected,
-    ycotekMode: ycotekSwitch ? ycotekSwitch.selected : false
+    ycotekMode: ycotekSwitch ? ycotekSwitch.selected : false,
+
+    // Negotiation state
+    negoBaseProfile: negoBaseProfile.value,
+    negoBasicType: negoBasicType.value,
+    negoBasicAction: negoBasicAction.value,
+    negoBasicVal: negoBasicVal.value,
+    negoAllowanceType: negoAllowanceType.value,
+    negoAllowanceAction: negoAllowanceAction.value,
+    negoAllowanceVal: negoAllowanceVal.value
   };
   localStorage.setItem('nepal_tax_calc_state', JSON.stringify(state));
 }
@@ -332,11 +418,15 @@ function loadInputsFromLocalStorage() {
     }
 
     // Load Profile A
-    if (state.basicA !== undefined) basicInputA.value = state.basicA;
+    if (state.basicA !== undefined) {
+      basicInputA.value = state.basicA;
+    }
     if (state.allowanceA !== undefined) allowanceInputA.value = state.allowanceA;
     if (state.bonusA !== undefined) bonusInputA.value = state.bonusA;
     if (state.splitBonusA !== undefined) splitBonusSwitchA.selected = state.splitBonusA;
     if (state.statusA !== undefined) statusSwitchA.selected = state.statusA;
+    if (state.freelanceA !== undefined) freelanceInputA.value = state.freelanceA;
+    if (state.otherA !== undefined) otherInputA.value = state.otherA;
     if (state.remoteA !== undefined) remoteSelectA.value = state.remoteA;
     if (state.ssfA !== undefined) ssfSwitchA.selected = state.ssfA;
     if (state.epfA !== undefined) epfSwitchA.selected = state.epfA;
@@ -347,11 +437,15 @@ function loadInputsFromLocalStorage() {
     if (state.femaleA !== undefined) femaleSwitchA.selected = state.femaleA;
 
     // Load Profile B
-    if (state.basicB !== undefined) basicInputB.value = state.basicB;
+    if (state.basicB !== undefined) {
+      basicInputB.value = state.basicB;
+    }
     if (state.allowanceB !== undefined) allowanceInputB.value = state.allowanceB;
     if (state.bonusB !== undefined) bonusInputB.value = state.bonusB;
     if (state.splitBonusB !== undefined) splitBonusSwitchB.selected = state.splitBonusB;
     if (state.statusB !== undefined) statusSwitchB.selected = state.statusB;
+    if (state.freelanceB !== undefined) freelanceInputB.value = state.freelanceB;
+    if (state.otherB !== undefined) otherInputB.value = state.otherB;
     if (state.remoteB !== undefined) remoteSelectB.value = state.remoteB;
     if (state.ssfB !== undefined) ssfSwitchB.selected = state.ssfB;
     if (state.epfB !== undefined) epfSwitchB.selected = state.epfB;
@@ -366,6 +460,15 @@ function loadInputsFromLocalStorage() {
       applyYcotekMode(state.ycotekMode);
     }
 
+    // Load Negotiation inputs
+    if (state.negoBaseProfile !== undefined) negoBaseProfile.value = state.negoBaseProfile;
+    if (state.negoBasicType !== undefined) negoBasicType.value = state.negoBasicType;
+    if (state.negoBasicAction !== undefined) negoBasicAction.value = state.negoBasicAction;
+    if (state.negoBasicVal !== undefined) negoBasicVal.value = state.negoBasicVal;
+    if (state.negoAllowanceType !== undefined) negoAllowanceType.value = state.negoAllowanceType;
+    if (state.negoAllowanceAction !== undefined) negoAllowanceAction.value = state.negoAllowanceAction;
+    if (state.negoAllowanceVal !== undefined) negoAllowanceVal.value = state.negoAllowanceVal;
+
   } catch (e) {
     console.error("Failed to parse persisted state", e);
   }
@@ -374,6 +477,10 @@ function loadInputsFromLocalStorage() {
 // --- Navigation Controls ---
 navCalcBtn.addEventListener('click', () => {
   switchNavTab('calc');
+});
+
+navNegotiateBtn.addEventListener('click', () => {
+  switchNavTab('negotiate');
 });
 
 navFeaturesBtn.addEventListener('click', () => {
@@ -387,20 +494,31 @@ navAiBtn.addEventListener('click', () => {
 function switchNavTab(tab) {
   currentNavTab = tab;
   navCalcBtn.classList.toggle('active', tab === 'calc');
+  navNegotiateBtn.classList.toggle('active', tab === 'negotiate');
   navFeaturesBtn.classList.toggle('active', tab === 'features');
   navAiBtn.classList.toggle('active', tab === 'ai');
   
   if (tab === 'calc') {
     calculatorView.classList.remove('hidden');
+    negotiateView.classList.add('hidden');
     featuresView.classList.add('hidden');
     aiUseView.classList.add('hidden');
+  } else if (tab === 'negotiate') {
+    negotiateView.classList.remove('hidden');
+    calculatorView.classList.add('hidden');
+    featuresView.classList.add('hidden');
+    aiUseView.classList.add('hidden');
+    syncNegoBaseProfileSelect();
+    triggerNegotiationRecalculation();
   } else if (tab === 'features') {
     featuresView.classList.remove('hidden');
     calculatorView.classList.add('hidden');
+    negotiateView.classList.add('hidden');
     aiUseView.classList.add('hidden');
   } else if (tab === 'ai') {
     aiUseView.classList.remove('hidden');
     calculatorView.classList.add('hidden');
+    negotiateView.classList.add('hidden');
     featuresView.classList.add('hidden');
   }
   saveInputsToLocalStorage();
@@ -436,12 +554,18 @@ function switchViewMode(mode) {
 
 // --- Bind all inputs to trigger Recalculation ---
 const inputsToWatch = [
-  basicInputA, allowanceInputA, bonusInputA, remoteSelectA, citInputA, lifeInputA, healthInputA, medicalInputA,
-  basicInputB, allowanceInputB, bonusInputB, remoteSelectB, citInputB, lifeInputB, healthInputB, medicalInputB
+  basicInputA, allowanceInputA, bonusInputA, freelanceInputA, otherInputA, remoteSelectA, citInputA, lifeInputA, healthInputA, medicalInputA,
+  basicInputB, allowanceInputB, bonusInputB, freelanceInputB, otherInputB, remoteSelectB, citInputB, lifeInputB, healthInputB, medicalInputB
 ];
 inputsToWatch.forEach(input => {
-  input.addEventListener('input', triggerRecalculation);
-  input.addEventListener('change', triggerRecalculation);
+  input.addEventListener('input', () => {
+    triggerRecalculation();
+    if (currentNavTab === 'negotiate') triggerNegotiationRecalculation();
+  });
+  input.addEventListener('change', () => {
+    triggerRecalculation();
+    if (currentNavTab === 'negotiate') triggerNegotiationRecalculation();
+  });
 });
 
 // Watch custom switches
@@ -449,7 +573,20 @@ inputsToWatch.forEach(input => {
   statusSwitchA, ssfSwitchA, epfSwitchA, femaleSwitchA, splitBonusSwitchA,
   statusSwitchB, ssfSwitchB, epfSwitchB, femaleSwitchB, splitBonusSwitchB
 ].forEach(sw => {
-  sw.addEventListener('change', triggerRecalculation);
+  sw.addEventListener('change', () => {
+    triggerRecalculation();
+    if (currentNavTab === 'negotiate') triggerNegotiationRecalculation();
+  });
+});
+
+// Bind Negotiation inputs to trigger Negotiation Recalculation
+const negoInputsToWatch = [
+  negoBaseProfile, negoBasicType, negoBasicAction, negoBasicVal,
+  negoAllowanceType, negoAllowanceAction, negoAllowanceVal
+];
+negoInputsToWatch.forEach(input => {
+  input.addEventListener('input', triggerNegotiationRecalculation);
+  input.addEventListener('change', triggerNegotiationRecalculation);
 });
 
 // --- YCOTEK Mode Helper ---
@@ -495,10 +632,10 @@ function applyYcotekMode(isYcotek) {
     epfSwitchB.disabled = true;
   } else {
     document.body.classList.remove('ycotek-active');
-    if (labelAllowanceA) labelAllowanceA.textContent = "Monthly Allowances (NPR)";
-    if (labelAllowanceB) labelAllowanceB.textContent = "Monthly Allowances (NPR)";
-    if (labelCitA) labelCitA.textContent = "Monthly Citizen Investment Trust (CIT) Contribution (NPR)";
-    if (labelCitB) labelCitB.textContent = "Monthly Citizen Investment Trust (CIT) Contribution (NPR)";
+    if (labelAllowanceA) labelAllowanceA.textContent = "Monthly Allowances";
+    if (labelAllowanceB) labelAllowanceB.textContent = "Monthly Allowances";
+    if (labelCitA) labelCitA.textContent = "Monthly Citizen Investment Trust (CIT) Contribution";
+    if (labelCitB) labelCitB.textContent = "Monthly Citizen Investment Trust (CIT) Contribution";
 
     remoteSelectA.disabled = false;
     remoteSelectB.disabled = false;
@@ -603,6 +740,8 @@ function triggerRecalculation() {
     monthlyAllowances: parseFloat(allowanceInputA.value) || 0,
     annualBonus: parseFloat(bonusInputA.value) || 0,
     filingStatus: statusSwitchA.selected ? 'married' : 'single',
+    monthlyFreelanceIncome: parseFloat(freelanceInputA.value) || 0,
+    annualOtherIncome: parseFloat(otherInputA.value) || 0,
     remoteArea: remoteSelectA.value,
     useSSF: ssfSwitchA.selected,
     useEPF: epfSwitchA.selected,
@@ -629,6 +768,8 @@ function triggerRecalculation() {
       monthlyAllowances: parseFloat(allowanceInputB.value) || 0,
       annualBonus: parseFloat(bonusInputB.value) || 0,
       filingStatus: statusSwitchB.selected ? 'married' : 'single',
+      monthlyFreelanceIncome: parseFloat(freelanceInputB.value) || 0,
+      annualOtherIncome: parseFloat(otherInputB.value) || 0,
       remoteArea: remoteSelectB.value,
       useSSF: ssfSwitchB.selected,
       useEPF: epfSwitchB.selected,
@@ -662,6 +803,16 @@ function triggerRecalculation() {
   // Draw Charts
   drawDonutChart('chart-svg-82', res82);
   drawDonutChart('chart-svg-83', res83);
+
+  // Draw Progressive Slab Bars
+  drawSlabProgressBar('82', res82);
+  drawSlabProgressBar('83', res83);
+
+  // Update Tax Optimization Advice
+  updateOptimizationTips(res82, res83, inputsA, inputsB);
+
+  // Sync Base Profile selector in Negotiation view
+  syncNegoBaseProfileSelect();
 
   // Save State
   saveInputsToLocalStorage();
@@ -761,6 +912,10 @@ function updateSavingCallout(res82, res83) {
 function updateDetailedTable(res82, res83, inputsA, inputsB) {
   const formatCell = (num, isBold = false) => {
     const rounded = Math.round(num);
+    if (rounded < 0) {
+      const text = 'Rs. (' + Math.abs(rounded).toLocaleString('en-NP') + ') [Refund]';
+      return isBold ? `<strong>${text}</strong>` : text;
+    }
     const text = 'Rs. ' + rounded.toLocaleString('en-NP');
     return isBold ? `<strong>${text}</strong>` : text;
   };
@@ -768,9 +923,10 @@ function updateDetailedTable(res82, res83, inputsA, inputsB) {
   const formatDiffCell = (diff) => {
     const rounded = Math.round(diff);
     if (rounded === 0) return 'Rs. 0';
-    const sign = rounded > 0 ? '+' : '';
-    const className = rounded > 0 ? 'highlight-positive' : 'highlight-negative';
-    return `<span class="${className}">${sign}${rounded.toLocaleString('en-NP')}</span>`;
+    if (rounded < 0) {
+      return `<span class="highlight-negative">Rs. (${Math.abs(rounded).toLocaleString('en-NP')})</span>`;
+    }
+    return `<span class="highlight-positive">+Rs. ${rounded.toLocaleString('en-NP')}</span>`;
   };
 
   const createRow = (label, val82, val83, isHeader = false, isBold = false, isDiffInverse = false) => {
@@ -793,7 +949,9 @@ function updateDetailedTable(res82, res83, inputsA, inputsB) {
   html += createRow('Gross Cash Salary components:', 0, 0, true);
   html += createRow('Annual Basic Salary', inputsA.monthlyBasicSalary * 12, inputsB.monthlyBasicSalary * 12);
   html += createRow('Annual Allowances', inputsA.monthlyAllowances * 12, inputsB.monthlyAllowances * 12);
-  html += createRow('Annual Bonus / Other Income', inputsA.annualBonus, inputsB.annualBonus);
+  html += createRow('Annual Bonus / Festive Allowance', inputsA.annualBonus, inputsB.annualBonus);
+  html += createRow('Annual Freelance / Consultancy Income', res82.freelanceAnnual, res83.freelanceAnnual);
+  html += createRow('Annual Other Income (Rent, Interest, etc.)', res82.otherAnnual, res83.otherAnnual);
   html += createRow('Bonus / Gratuity After Tax', res82.bonusAfterTax, res83.bonusAfterTax);
   html += createRow('Gross Cash Income (Annual)', res82.grossCashSalaryAnnual, res83.grossCashSalaryAnnual, false, true);
 
@@ -817,7 +975,9 @@ function updateDetailedTable(res82, res83, inputsA, inputsB) {
   html += createRow('Base progressive Tax', res82.baseTaxLiability, res83.baseTaxLiability, false, false, true);
   html += createRow('Medical Expenses Tax Credit', res82.allowedMedicalCredit, res83.allowedMedicalCredit);
   html += createRow('Female Tax Rebate (10%)', res82.femaleRebate, res83.femaleRebate);
-  html += createRow('Final Annual Income Tax Paid', res82.finalTaxLiability, res83.finalTaxLiability, false, true, true);
+  html += createRow('Final Annual Income Tax Liability', res82.finalTaxLiability, res83.finalTaxLiability, false, true, true);
+  html += createRow('TDS Paid at Source (15% Freelance + 10% Other)', res82.tdsPaidSource, res83.tdsPaidSource, false, false, true);
+  html += createRow('Net Year-End Tax Payable / (Refund)', res82.netTaxPayable, res83.netTaxPayable, false, true, true);
 
   // 5. Cash in Hand
   html += createRow('Employee Cash flow (Net Take-home):', 0, 0, true);
@@ -937,6 +1097,335 @@ function drawDonutChart(svgId, results) {
   `;
 }
 
+// --- Progressive Slab Bar Visualizer ---
+function drawSlabProgressBar(suffix, results, prefix = '') {
+  const containerId = prefix ? `${prefix}-slab-bar-container-${suffix}` : `slab-bar-container-${suffix}`;
+  const legendContainerId = prefix ? `${prefix}-slab-bar-legend-${suffix}` : `slab-bar-legend-${suffix}`;
+  const container = document.getElementById(containerId);
+  const legendContainer = document.getElementById(legendContainerId);
+  if (!container || !legendContainer) return;
+
+  container.innerHTML = '';
+  legendContainer.innerHTML = '';
+
+  const taxableIncome = results.taxableIncome;
+  if (taxableIncome <= 0 || results.taxBreakdown.length === 0) {
+    container.innerHTML = `
+      <div class="slab-segment slab-seg-0 has-tooltip" style="width: 100%; display: flex; align-items: center; justify-content: center; color: #047857; font-size: 10px; font-weight: 700;">
+        100% Tax-Exempt / Income Below Threshold
+        <span class="tooltip-text" style="bottom: 125%; width: 200px;">Your taxable income is Rs. 0. No tax is due.</span>
+      </div>
+    `;
+    legendContainer.innerHTML = `
+      <div class="legend-item">
+        <div class="legend-color slab-seg-0"></div>
+        <span>0% Tax Free</span>
+      </div>
+    `;
+    return;
+  }
+
+  let barHtml = '';
+  const uniqueRates = new Set();
+
+  results.taxBreakdown.forEach(segment => {
+    const widthPercent = (segment.income / taxableIncome) * 100;
+    if (widthPercent <= 0) return;
+
+    const ratePercent = segment.rate * 100;
+    const rateKey = ratePercent === 0 ? '0' : ratePercent.toFixed(0);
+    uniqueRates.add(ratePercent);
+
+    barHtml += `
+      <div class="slab-segment slab-seg-${rateKey} has-tooltip" style="width: ${widthPercent}%;">
+        <span class="tooltip-text" style="bottom: 130%; width: 220px;">
+          <strong>Slab Range:</strong> Rs. ${segment.range}<br>
+          <strong>Income in Slab:</strong> Rs. ${Math.round(segment.income).toLocaleString('en-NP')}<br>
+          <strong>Slab Rate:</strong> ${ratePercent.toFixed(0)}%<br>
+          <strong>Tax in Slab:</strong> Rs. ${Math.round(segment.tax).toLocaleString('en-NP')}
+        </span>
+      </div>
+    `;
+  });
+
+  container.innerHTML = barHtml;
+
+  // Render Legend
+  let legendHtml = '';
+  // Sort rates numerically
+  const sortedRates = Array.from(uniqueRates).sort((a, b) => a - b);
+  sortedRates.forEach(rate => {
+    const rateKey = rate === 0 ? '0' : rate.toFixed(0);
+    const label = rate === 0 ? '0% (SSF Waived)' : `${rate.toFixed(0)}% Slab`;
+    legendHtml += `
+      <div class="legend-item">
+        <div class="legend-color slab-seg-${rateKey}"></div>
+        <span>${label}</span>
+      </div>
+    `;
+  });
+  legendContainer.innerHTML = legendHtml;
+}
+
+// --- Smart Tax Saving Recommendations (Optimization Advice) ---
+function updateOptimizationTips(res82, res83, inputsA, inputsB) {
+  optTipsContent.innerHTML = '';
+  const tips = [];
+
+  const analyzeProfile = (profileName, inputs, results, suffix) => {
+    if (results.finalTaxLiability <= 0) return;
+
+    // Get top marginal rate
+    const topRate = results.taxBreakdown.length > 0 
+      ? results.taxBreakdown[results.taxBreakdown.length - 1].rate 
+      : 0.10;
+
+    // 1. Life Insurance Exemption
+    if (inputs.lifeInsurancePremium < 40000) {
+      const remaining = 40000 - inputs.lifeInsurancePremium;
+      const savings = remaining * topRate;
+      if (savings > 100) {
+        tips.push({
+          title: `${profileName}: Maximize Life Insurance Exemption`,
+          desc: `Invest up to Rs. ${Math.round(remaining).toLocaleString('en-NP')} more in Life Insurance premium. At your marginal tax rate, this will save you up to <strong>Rs. ${Math.round(savings).toLocaleString('en-NP')}</strong> in annual tax.`,
+          icon: 'favorite_border'
+        });
+      }
+    }
+
+    // 2. Health Insurance Exemption
+    if (inputs.healthInsurancePremium < 20000) {
+      const remaining = 20000 - inputs.healthInsurancePremium;
+      const savings = remaining * topRate;
+      if (savings > 100) {
+        tips.push({
+          title: `${profileName}: Maximize Health Insurance Exemption`,
+          desc: `Invest up to Rs. ${Math.round(remaining).toLocaleString('en-NP')} more in Health Insurance premium. This will save you up to <strong>Rs. ${Math.round(savings).toLocaleString('en-NP')}</strong> in annual tax.`,
+          icon: 'health_and_safety'
+        });
+      }
+    }
+
+    // 3. Approved Medical Credit
+    if (inputs.medicalExpenses < 10000) {
+      const remaining = 10000 - inputs.medicalExpenses;
+      const credit = remaining * 0.15;
+      if (credit > 10) {
+        tips.push({
+          title: `${profileName}: Claim Approved Medical Expenses`,
+          desc: `Submit up to Rs. ${Math.round(remaining).toLocaleString('en-NP')} more in approved medical bills. At a 15% credit rate, this directly reduces your final tax bill by <strong>Rs. ${Math.round(credit).toLocaleString('en-NP')}</strong>.`,
+          icon: 'receipt'
+        });
+      }
+    }
+
+    // 4. Retirement Savings (CIT / SSF / EPF)
+    const basicAnnual = inputs.monthlyBasicSalary * 12;
+    const employeeSSF = inputs.useSSF ? basicAnnual * 0.11 : 0;
+    const employerSSF = inputs.useSSF ? basicAnnual * 0.20 : 0;
+    const employeeEPF = inputs.useEPF ? basicAnnual * 0.10 : 0;
+    const employerEPF = inputs.useEPF ? basicAnnual * 0.10 : 0;
+    const citAnnual = inputs.citMonthly * 12;
+
+    const totalContribution = employeeSSF + employerSSF + employeeEPF + employerEPF + citAnnual;
+    const maxLimit = Math.min(results.assessableIncome * 1/3, 500000);
+
+    if (totalContribution < maxLimit) {
+      const remaining = maxLimit - totalContribution;
+      const savings = remaining * topRate;
+      const monthlyIncrease = remaining / 12;
+
+      if (savings > 100 && monthlyIncrease > 500) {
+        tips.push({
+          title: `${profileName}: Increase Citizen Investment Trust (CIT)`,
+          desc: `Increase your monthly CIT contribution by up to Rs. ${Math.round(monthlyIncrease).toLocaleString('en-NP')} (or Rs. ${Math.round(remaining).toLocaleString('en-NP')} annually). This will reduce your taxable income, saving you up to <strong>Rs. ${Math.round(savings).toLocaleString('en-NP')}</strong> in annual tax.`,
+          icon: 'savings'
+        });
+      }
+    }
+
+    // 5. SSF 1% SST Waiver
+    if (!inputs.useSSF && results.taxableIncome > 0 && suffix === '83') {
+      const taxableSubjectToSST = Math.min(results.taxableIncome, 1000000);
+      const sstSavings = taxableSubjectToSST * 0.01;
+      if (sstSavings > 100) {
+        tips.push({
+          title: `${profileName}: Enroll in Social Security Fund (SSF)`,
+          desc: `By enrolling in SSF (instead of EPF/None), you receive a 1% SST waiver on your first Rs. 1,000,000 of taxable income, saving you <strong>Rs. ${Math.round(sstSavings).toLocaleString('en-NP')}</strong> in tax.`,
+          icon: 'security'
+        });
+      }
+    }
+  };
+
+  const nameA = (currentViewMode !== 'compare' || currentTab === 'same') ? 'Tax Plan' : 'Profile A';
+  analyzeProfile(nameA, inputsA, res82, '82');
+
+  if (currentViewMode === 'compare' && currentTab === 'diff') {
+    analyzeProfile('Profile B', inputsB, res83, '83');
+  }
+
+  if (tips.length === 0) {
+    optTipsCard.style.display = 'none';
+    return;
+  }
+
+  optTipsCard.style.display = 'flex';
+  
+  let html = '';
+  tips.forEach(tip => {
+    html += `
+      <div class="opt-tip-item">
+        <span class="material-icons opt-tip-icon">${tip.icon}</span>
+        <div class="opt-tip-text">
+          <div class="opt-tip-title">${tip.title}</div>
+          <div class="opt-tip-desc">${tip.desc}</div>
+        </div>
+      </div>
+    `;
+  });
+  optTipsContent.innerHTML = html;
+}
+
+// --- URL State Serialization & Sharing ---
+function generateShareLink() {
+  const params = new URLSearchParams();
+  params.set('mode', currentViewMode);
+  params.set('tab', currentTab);
+  params.set('ycotek', ycotekSwitch ? ycotekSwitch.selected : false);
+  params.set('diffMode', diffModeSelect.value);
+
+  // Profile A inputs
+  params.set('basicA', basicInputA.value);
+  params.set('allowanceA', allowanceInputA.value);
+  params.set('bonusA', bonusInputA.value);
+  params.set('splitA', splitBonusSwitchA.selected);
+  params.set('statusA', statusSwitchA.selected);
+  params.set('freelanceA', freelanceInputA.value);
+  params.set('otherA', otherInputA.value);
+  params.set('remoteA', remoteSelectA.value);
+  params.set('ssfA', ssfSwitchA.selected);
+  params.set('epfA', epfSwitchA.selected);
+  params.set('citA', citInputA.value);
+  params.set('lifeA', lifeInputA.value);
+  params.set('healthA', healthInputA.value);
+  params.set('medicalA', medicalInputA.value);
+  params.set('femaleA', femaleSwitchA.selected);
+
+  // Profile B inputs
+  params.set('basicB', basicInputB.value);
+  params.set('allowanceB', allowanceInputB.value);
+  params.set('bonusB', bonusInputB.value);
+  params.set('splitB', splitBonusSwitchB.selected);
+  params.set('statusB', statusSwitchB.selected);
+  params.set('freelanceB', freelanceInputB.value);
+  params.set('otherB', otherInputB.value);
+  params.set('remoteB', remoteSelectB.value);
+  params.set('ssfB', ssfSwitchB.selected);
+  params.set('epfB', epfSwitchB.selected);
+  params.set('citB', citInputB.value);
+  params.set('lifeB', lifeInputB.value);
+  params.set('healthB', healthInputB.value);
+  params.set('medicalB', medicalInputB.value);
+  params.set('femaleB', femaleSwitchB.selected);
+
+  // Negotiation state
+  params.set('negoBase', negoBaseProfile.value);
+  params.set('negoBasicT', negoBasicType.value);
+  params.set('negoBasicAct', negoBasicAction.value);
+  params.set('negoBasicV', negoBasicVal.value);
+  params.set('negoAllowanceT', negoAllowanceType.value);
+  params.set('negoAllowanceAct', negoAllowanceAction.value);
+  params.set('negoAllowanceV', negoAllowanceVal.value);
+
+  const shareUrl = window.location.origin + window.location.pathname + '?' + params.toString();
+  
+  // Copy link to clipboard
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    // Premium visual button feedback
+    const originalHtml = btnShare.innerHTML;
+    btnShare.innerHTML = '<span class="material-icons" style="font-size: 16px;">done</span><span>Link Copied!</span>';
+    setTimeout(() => {
+      btnShare.innerHTML = originalHtml;
+    }, 2500);
+  }).catch(err => {
+    console.error('Failed to copy share link: ', err);
+    prompt('Copy this shareable link:', shareUrl);
+  });
+}
+
+function loadInputsFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (!urlParams.has('basicA')) return false; // Not a shared link
+
+  try {
+    if (urlParams.has('mode')) currentViewMode = urlParams.get('mode');
+    if (urlParams.has('tab')) currentTab = urlParams.get('tab');
+    if (urlParams.has('diffMode')) diffModeSelect.value = urlParams.get('diffMode');
+    
+    if (urlParams.has('ycotek') && ycotekSwitch) {
+      const isYcotek = urlParams.get('ycotek') === 'true';
+      ycotekSwitch.selected = isYcotek;
+      applyYcotekMode(isYcotek);
+    }
+
+    // Profile A
+    if (urlParams.has('basicA')) basicInputA.value = urlParams.get('basicA');
+    if (urlParams.has('allowanceA')) allowanceInputA.value = urlParams.get('allowanceA');
+    if (urlParams.has('bonusA')) bonusInputA.value = urlParams.get('bonusA');
+    if (urlParams.has('splitA')) splitBonusSwitchA.selected = urlParams.get('splitA') === 'true';
+    if (urlParams.has('statusA')) statusSwitchA.selected = urlParams.get('statusA') === 'true';
+    if (urlParams.has('freelanceA')) freelanceInputA.value = urlParams.get('freelanceA');
+    if (urlParams.has('otherA')) otherInputA.value = urlParams.get('otherA');
+    if (urlParams.has('remoteA')) remoteSelectA.value = urlParams.get('remoteA');
+    if (urlParams.has('ssfA')) ssfSwitchA.selected = urlParams.get('ssfA') === 'true';
+    if (urlParams.has('epfA')) epfSwitchA.selected = urlParams.get('epfA') === 'true';
+    if (urlParams.has('citA')) citInputA.value = urlParams.get('citA');
+    if (urlParams.has('lifeA')) lifeInputA.value = urlParams.get('lifeA');
+    if (urlParams.has('healthA')) healthInputA.value = urlParams.get('healthA');
+    if (urlParams.has('medicalA')) medicalInputA.value = urlParams.get('medicalA');
+    if (urlParams.has('femaleA')) femaleSwitchA.selected = urlParams.get('femaleA') === 'true';
+
+    // Profile B
+    if (urlParams.has('basicB')) basicInputB.value = urlParams.get('basicB');
+    if (urlParams.has('allowanceB')) allowanceInputB.value = urlParams.get('allowanceB');
+    if (urlParams.has('bonusB')) bonusInputB.value = urlParams.get('bonusB');
+    if (urlParams.has('splitB')) splitBonusSwitchB.selected = urlParams.get('splitB') === 'true';
+    if (urlParams.has('statusB')) statusSwitchB.selected = urlParams.get('statusB') === 'true';
+    if (urlParams.has('freelanceB')) freelanceInputB.value = urlParams.get('freelanceB');
+    if (urlParams.has('otherB')) otherInputB.value = urlParams.get('otherB');
+    if (urlParams.has('remoteB')) remoteSelectB.value = urlParams.get('remoteB');
+    if (urlParams.has('ssfB')) ssfSwitchB.selected = urlParams.get('ssfB') === 'true';
+    if (urlParams.has('epfB')) epfSwitchB.selected = urlParams.get('epfB') === 'true';
+    if (urlParams.has('citB')) citInputB.value = urlParams.get('citB');
+    if (urlParams.has('lifeB')) lifeInputB.value = urlParams.get('lifeB');
+    if (urlParams.has('healthB')) healthInputB.value = urlParams.get('healthB');
+    if (urlParams.has('medicalB')) medicalInputB.value = urlParams.get('medicalB');
+    if (urlParams.has('femaleB')) femaleSwitchB.selected = urlParams.get('femaleB') === 'true';
+
+    // Negotiation state
+    if (urlParams.has('negoBase')) negoBaseProfile.value = urlParams.get('negoBase');
+    if (urlParams.has('negoBasicT')) negoBasicType.value = urlParams.get('negoBasicT');
+    if (urlParams.has('negoBasicAct')) negoBasicAction.value = urlParams.get('negoBasicAct');
+    if (urlParams.has('negoBasicV')) negoBasicVal.value = urlParams.get('negoBasicV');
+    if (urlParams.has('negoAllowanceT')) negoAllowanceType.value = urlParams.get('negoAllowanceT');
+    if (urlParams.has('negoAllowanceAct')) negoAllowanceAction.value = urlParams.get('negoAllowanceAct');
+    if (urlParams.has('negoAllowanceV')) negoAllowanceVal.value = urlParams.get('negoAllowanceV');
+
+    // Sync views
+    switchNavTab(currentNavTab);
+    switchViewMode(currentViewMode);
+
+    // Clear URL parameters so bookmarking or refreshing doesn't lock these settings
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    return true;
+  } catch (e) {
+    console.error("Failed to load scenario from URL parameters", e);
+    return false;
+  }
+}
+
 // --- Sticky Header Height Calculation ---
 function updateHeaderHeight() {
   const header = document.querySelector('header');
@@ -948,9 +1437,315 @@ function updateHeaderHeight() {
 window.addEventListener('load', updateHeaderHeight);
 window.addEventListener('resize', updateHeaderHeight);
 
+// --- Share & PDF Export Event Listeners ---
+if (btnShare) {
+  btnShare.addEventListener('click', generateShareLink);
+}
+if (btnExportPdf) {
+  btnExportPdf.addEventListener('click', () => {
+    window.print();
+  });
+}
+
+// --- Helper to read main inputs ---
+function getCalculatorInputs(suffix) {
+  const isA = (suffix === 'a');
+  const basicEl = isA ? basicInputA : basicInputB;
+  const allowanceEl = isA ? allowanceInputA : allowanceInputB;
+  const bonusEl = isA ? bonusInputA : bonusInputB;
+  const statusEl = isA ? statusSwitchA : statusSwitchB;
+  const freelanceEl = isA ? freelanceInputA : freelanceInputB;
+  const otherEl = isA ? otherInputA : otherInputB;
+  const remoteEl = isA ? remoteSelectA : remoteSelectB;
+  const ssfEl = isA ? ssfSwitchA : ssfSwitchB;
+  const epfEl = isA ? epfSwitchA : epfSwitchB;
+  const citEl = isA ? citInputA : citInputB;
+  const lifeEl = isA ? lifeInputA : lifeInputB;
+  const healthEl = isA ? healthInputA : healthInputB;
+  const medicalEl = isA ? medicalInputA : medicalInputB;
+  const femaleEl = isA ? femaleSwitchA : femaleSwitchB;
+  const splitBonusEl = isA ? splitBonusSwitchA : splitBonusSwitchB;
+
+  return {
+    monthlyBasicSalary: parseFloat(basicEl.value) || 0,
+    monthlyAllowances: parseFloat(allowanceEl.value) || 0,
+    annualBonus: parseFloat(bonusEl.value) || 0,
+    filingStatus: statusEl.selected ? 'married' : 'single',
+    monthlyFreelanceIncome: parseFloat(freelanceEl.value) || 0,
+    annualOtherIncome: parseFloat(otherEl.value) || 0,
+    remoteArea: remoteEl.value,
+    useSSF: ssfEl.selected,
+    useEPF: epfEl.selected,
+    citMonthly: parseFloat(citEl.value) || 0,
+    lifeInsurancePremium: parseFloat(lifeEl.value) || 0,
+    healthInsurancePremium: parseFloat(healthEl.value) || 0,
+    medicalExpenses: parseFloat(medicalEl.value) || 0,
+    femaleTaxpayer: femaleEl.selected,
+    splitBonus: splitBonusEl.selected
+  };
+}
+
+// --- Sync Base Profile selector options in Negotiation view ---
+function syncNegoBaseProfileSelect() {
+  const optionB = negoBaseProfile.querySelector('option[value="profileB_83"]');
+  if (!optionB) return;
+
+  const showProfileB = (currentViewMode === 'compare' && currentTab === 'diff');
+  if (showProfileB) {
+    optionB.disabled = false;
+    optionB.style.display = 'block';
+  } else {
+    optionB.disabled = true;
+    optionB.style.display = 'none';
+    if (negoBaseProfile.value === 'profileB_83') {
+      negoBaseProfile.value = 'profileA_83';
+    }
+  }
+}
+
+// --- Summary Card Updater for Negotiation View ---
+function updateNegoSummaryCard(prefix, suffix, results, isSplit, bonusVal) {
+  document.getElementById(`${prefix}-cash-monthly-${suffix}`).textContent = 'Rs. ' + Math.round(results.netCashInHandMonthly).toLocaleString('en-NP') + ' / mo';
+  document.getElementById(`${prefix}-cash-annual-${suffix}`).textContent = 'Rs. ' + Math.round(results.netCashInHandAnnual).toLocaleString('en-NP') + ' / yr';
+  
+  const cashNoteEl = document.getElementById(`${prefix}-cash-monthly-note-${suffix}`);
+  if (cashNoteEl) {
+    if (!isSplit && bonusVal > 0) {
+      cashNoteEl.textContent = `(+Rs. ${Math.round(results.bonusAfterTax).toLocaleString('en-NP')} bonus when taken)`;
+    } else {
+      cashNoteEl.textContent = '';
+    }
+  }
+
+  const monthlyTax = isSplit ? results.finalTaxLiability / 12 : results.taxWithoutBonus / 12;
+  document.getElementById(`${prefix}-tax-monthly-${suffix}`).textContent = 'Rs. ' + Math.round(monthlyTax).toLocaleString('en-NP') + ' / mo';
+  document.getElementById(`${prefix}-tax-annual-${suffix}`).textContent = 'Rs. ' + Math.round(results.finalTaxLiability).toLocaleString('en-NP') + ' / yr';
+
+  const taxNoteEl = document.getElementById(`${prefix}-tax-monthly-note-${suffix}`);
+  if (taxNoteEl) {
+    if (!isSplit && bonusVal > 0 && results.marginalTaxOnBonus > 0) {
+      taxNoteEl.textContent = `(+Rs. ${Math.round(results.marginalTaxOnBonus).toLocaleString('en-NP')} tax on bonus when taken)`;
+    } else {
+      taxNoteEl.textContent = '';
+    }
+  }
+
+  const ctcNoBonus = results.costToCompany - bonusVal;
+  const ctcMonthlyVal = isSplit ? results.costToCompany / 12 : ctcNoBonus / 12;
+  document.getElementById(`${prefix}-ctc-monthly-${suffix}`).textContent = 'Rs. ' + Math.round(ctcMonthlyVal).toLocaleString('en-NP') + ' / mo';
+  document.getElementById(`${prefix}-ctc-annual-${suffix}`).textContent = 'Rs. ' + Math.round(results.costToCompany).toLocaleString('en-NP') + ' / yr';
+
+  const ctcNoteEl = document.getElementById(`${prefix}-ctc-monthly-note-${suffix}`);
+  if (ctcNoteEl) {
+    if (!isSplit && bonusVal > 0) {
+      ctcNoteEl.textContent = `(+Rs. ${Math.round(bonusVal).toLocaleString('en-NP')} bonus when taken)`;
+    } else {
+      ctcNoteEl.textContent = '';
+    }
+  }
+
+  document.getElementById(`${prefix}-savings-monthly-${suffix}`).textContent = 'Rs. ' + Math.round(results.totalRetirementSavingsAnnual / 12).toLocaleString('en-NP') + ' / mo';
+  document.getElementById(`${prefix}-savings-annual-${suffix}`).textContent = 'Rs. ' + Math.round(results.totalRetirementSavingsAnnual).toLocaleString('en-NP') + ' / yr';
+}
+
+// --- Detailed Table for Negotiation View ---
+function updateNegoDetailedTable(resBase, resNego, inputsBase, inputsNego) {
+  const formatCell = (num, isBold = false) => {
+    const rounded = Math.round(num);
+    if (rounded < 0) {
+      const text = 'Rs. (' + Math.abs(rounded).toLocaleString('en-NP') + ') [Refund]';
+      return isBold ? `<strong>${text}</strong>` : text;
+    }
+    const text = 'Rs. ' + rounded.toLocaleString('en-NP');
+    return isBold ? `<strong>${text}</strong>` : text;
+  };
+
+  const formatDiffCell = (diff) => {
+    const rounded = Math.round(diff);
+    if (rounded === 0) return 'Rs. 0';
+    if (rounded < 0) {
+      return `<span class="highlight-negative">Rs. (${Math.abs(rounded).toLocaleString('en-NP')})</span>`;
+    }
+    return `<span class="highlight-positive">+Rs. ${rounded.toLocaleString('en-NP')}</span>`;
+  };
+
+  const createRow = (label, valBase, valNego, isHeader = false, isBold = false, isDiffInverse = false) => {
+    const diff = valNego - valBase;
+    const diffVal = isDiffInverse ? -diff : diff;
+
+    return `
+      <tr class="${isHeader ? 'row-group-title' : ''} ${isBold ? 'net-highlight' : ''}">
+        <td>${label}</td>
+        <td>${formatCell(valBase, isBold)}</td>
+        <td>${formatCell(valNego, isBold)}</td>
+        <td>${formatDiffCell(diffVal)}</td>
+      </tr>
+    `;
+  };
+
+  let html = '';
+
+  // 1. Gross Earnings
+  html += createRow('Gross Cash Salary components:', 0, 0, true);
+  html += createRow('Annual Basic Salary', inputsBase.monthlyBasicSalary * 12, inputsNego.monthlyBasicSalary * 12);
+  html += createRow('Annual Allowances', inputsBase.monthlyAllowances * 12, inputsNego.monthlyAllowances * 12);
+  html += createRow('Annual Bonus / Festive Allowance', inputsBase.annualBonus, inputsNego.annualBonus);
+  html += createRow('Annual Freelance / Consultancy Income', resBase.freelanceAnnual, resNego.freelanceAnnual);
+  html += createRow('Annual Other Income', resBase.otherAnnual, resNego.otherAnnual);
+  html += createRow('Bonus / Gratuity After Tax', resBase.bonusAfterTax, resNego.bonusAfterTax);
+  html += createRow('Gross Cash Income (Annual)', resBase.grossCashSalaryAnnual, resNego.grossCashSalaryAnnual, false, true);
+
+  // 2. Employer Additions & Cost to Company
+  html += createRow('Employer Contributions & Cost to Company (CTC):', 0, 0, true);
+  html += createRow('Employer SSF (20% basic)', resBase.employerSSFAnnual, resNego.employerSSFAnnual);
+  html += createRow('Employer EPF (10% basic)', resBase.employerEPFAnnual, resNego.employerEPFAnnual);
+  html += createRow('Assessable Income (Tax Base)', resBase.assessableIncome, resNego.assessableIncome, false, true);
+  html += createRow('Cost to Company (CTC)', resBase.costToCompany, resNego.costToCompany, false, true);
+
+  // 3. Deductions
+  html += createRow('Allowable Tax Deductions:', 0, 0, true);
+  html += createRow('Retirement Fund (SSF + EPF + CIT)', resBase.allowedRetirementDeduction, resNego.allowedRetirementDeduction, false, false, true);
+  html += createRow('Life Insurance Exemption', resBase.allowedLifeInsurance, resNego.allowedLifeInsurance, false, false, true);
+  html += createRow('Health Insurance Exemption', resBase.allowedHealthInsurance, resNego.allowedHealthInsurance, false, false, true);
+  html += createRow('Remote Area Exemption', resBase.allowedRemoteArea, resNego.allowedRemoteArea, false, false, true);
+  html += createRow('Total Taxable Income', resBase.taxableIncome, resNego.taxableIncome, false, true, true);
+
+  // 4. Taxes & Credits
+  html += createRow('Taxes and Credits Breakdown:', 0, 0, true);
+  html += createRow('Base progressive Tax', resBase.baseTaxLiability, resNego.baseTaxLiability, false, false, true);
+  html += createRow('Medical Expenses Tax Credit', resBase.allowedMedicalCredit, resNego.allowedMedicalCredit);
+  html += createRow('Female Tax Rebate (10%)', resBase.femaleRebate, resNego.femaleRebate);
+  html += createRow('Final Annual Income Tax Liability', resBase.finalTaxLiability, resNego.finalTaxLiability, false, true, true);
+  html += createRow('TDS Paid at Source (15% Freelance + 10% Other)', resBase.tdsPaidSource, resNego.tdsPaidSource, false, false, true);
+  html += createRow('Net Year-End Tax Payable / (Refund)', resBase.netTaxPayable, resNego.netTaxPayable, false, true, true);
+
+  // 5. Cash in Hand
+  html += createRow('Employee Cash flow (Net Take-home):', 0, 0, true);
+  html += createRow('Out-of-Pocket Savings (Employee SSF+EPF+CIT)', resBase.employeeOutofPocketDeductions, resNego.employeeOutofPocketDeductions, false, false, true);
+  html += createRow('Annual Cash in Hand (Take-Home)', resBase.netCashInHandAnnual, resNego.netCashInHandAnnual, false, true);
+
+  let monthlyLabel = 'Monthly Cash in Hand (Take-Home)';
+  monthlyLabel += inputsBase.splitBonus ? ' (incl. bonus)' : ' (excl. bonus & its tax)';
+  html += createRow(monthlyLabel, resBase.netCashInHandMonthly, resNego.netCashInHandMonthly, false, true);
+
+  // 6. Savings Growth
+  html += createRow('Retirement Wealth Accumulation:', 0, 0, true);
+  html += createRow('Annual Retirement Savings (incl. Employer Match)', resBase.totalRetirementSavingsAnnual, resNego.totalRetirementSavingsAnnual, false, false);
+  html += createRow('Total Financial Value (Take-Home + Savings)', resBase.netCashInHandAnnual + resBase.totalRetirementSavingsAnnual, resNego.netCashInHandAnnual + resNego.totalRetirementSavingsAnnual, false, true);
+
+  negoComparisonTableBody.innerHTML = html;
+}
+
+// --- Core Recalculation for Negotiation Mode ---
+function triggerNegotiationRecalculation() {
+  if (currentNavTab !== 'negotiate') return;
+
+  const baseProfile = negoBaseProfile.value;
+  const isProfileB = (baseProfile === 'profileB_83');
+  const suffix = isProfileB ? 'b' : 'a';
+  const year = (baseProfile === 'profileA_82') ? '2082_83' : '2083_84';
+
+  const baseInputs = getCalculatorInputs(suffix);
+  const isYcotek = ycotekSwitch ? ycotekSwitch.selected : false;
+
+  // Enforce Ycotek settings on base inputs if YCOTEK Mode is ON
+  if (isYcotek) {
+    baseInputs.useSSF = false;
+    baseInputs.useEPF = true;
+    baseInputs.remoteArea = 'None';
+    baseInputs.healthInsurancePremium = 0;
+    baseInputs.medicalExpenses = 0;
+    baseInputs.splitBonus = false;
+  }
+
+  // Calculate base offer results
+  let baseCit = baseInputs.citMonthly;
+  if (isYcotek) {
+    baseCit = Math.max(0, baseCit - (baseInputs.monthlyBasicSalary * 0.10));
+  }
+  
+  const baseCalcInputs = {
+    ...baseInputs,
+    citMonthly: baseCit,
+    year: year
+  };
+  const resBase = calculateTax(baseCalcInputs);
+
+  // Read negotiation adjustments
+  const basicType = negoBasicType.value;
+  const basicAction = negoBasicAction.value;
+  const basicVal = parseFloat(negoBasicVal.value) || 0;
+
+  const allowanceType = negoAllowanceType.value;
+  const allowanceAction = negoAllowanceAction.value;
+  const allowanceVal = parseFloat(negoAllowanceVal.value) || 0;
+
+  // Compute adjusted monthly basic salary
+  let basicAdj = 0;
+  if (basicType === 'percent') {
+    basicAdj = baseInputs.monthlyBasicSalary * (basicVal / 100);
+  } else {
+    basicAdj = basicVal;
+  }
+  const negoBasic = basicAction === 'increase'
+    ? baseInputs.monthlyBasicSalary + basicAdj
+    : Math.max(0, baseInputs.monthlyBasicSalary - basicAdj);
+
+  // Compute adjusted allowances
+  let allowanceAdj = 0;
+  if (allowanceType === 'percent') {
+    allowanceAdj = baseInputs.monthlyAllowances * (allowanceVal / 100);
+  } else {
+    allowanceAdj = allowanceVal;
+  }
+  const negoAllowance = allowanceAction === 'increase'
+    ? baseInputs.monthlyAllowances + allowanceAdj
+    : Math.max(0, baseInputs.monthlyAllowances - allowanceAdj);
+
+  // Calculate negotiated offer results
+  let negoCitVal = baseInputs.citMonthly;
+  if (isYcotek) {
+    negoCitVal = Math.max(0, negoCitVal - (negoBasic * 0.10));
+  }
+
+  const negoCalcInputs = {
+    ...baseInputs,
+    monthlyBasicSalary: negoBasic,
+    monthlyAllowances: negoAllowance,
+    citMonthly: negoCitVal,
+    year: year
+  };
+  const resNego = calculateTax(negoCalcInputs);
+
+  // Update Summary displays
+  updateNegoSummaryCard('nego', 'base', resBase, baseCalcInputs.splitBonus, baseCalcInputs.annualBonus);
+  updateNegoSummaryCard('nego', 'nego', resNego, negoCalcInputs.splitBonus, negoCalcInputs.annualBonus);
+
+  // Draw Slab Progress Bars
+  drawSlabProgressBar('base', resBase, 'nego');
+  drawSlabProgressBar('nego', resNego, 'nego');
+
+  // Draw Charts
+  drawDonutChart('nego-chart-svg-base', resBase);
+  drawDonutChart('nego-chart-svg-nego', resNego);
+
+  // Update Table
+  updateNegoDetailedTable(resBase, resNego, baseCalcInputs, negoCalcInputs);
+
+  // Save State
+  saveInputsToLocalStorage();
+}
+
 // --- Initialize App ---
 initTheme();
-loadInputsFromLocalStorage();
+const loadedFromUrl = loadInputsFromUrl();
+if (!loadedFromUrl) {
+  loadInputsFromLocalStorage();
+}
+syncNegoBaseProfileSelect();
 triggerRecalculation();
+if (currentNavTab === 'negotiate') {
+  triggerNegotiationRecalculation();
+}
 updateHeaderHeight();
 console.log('Nepal Income Tax Calculator Controller initialized!');

@@ -1075,3 +1075,342 @@ body.ycotek-active {
   background-image: var(--app-gradient-background);
 }
 
+/* --- Input & Configuration Tooltips --- */
+.has-tooltip {
+  position: relative;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 250px;
+  background-color: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-on-surface-variant);
+  text-align: left;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.5;
+  box-shadow: var(--elevation-2);
+  position: absolute;
+  z-index: 2000; /* Float above other elements, including sticky headers */
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px) scale(0.95);
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s;
+  pointer-events: none;
+}
+
+/* Tooltip arrow */
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--md-sys-color-surface-variant) transparent transparent transparent;
+}
+
+/* Show tooltip on hover of the wrapper group */
+.has-tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Make tooltips responsive on smaller screens */
+@media (max-width: 480px) {
+  .tooltip-text {
+    width: 200px;
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+}
+
+/* --- Mobile Responsiveness Enhancements --- */
+@media (max-width: 600px) {
+  /* Prevent horizontal scrollbars on body */
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  main {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .card {
+    padding: 16px;
+    gap: 16px;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Optimize card headers so copy buttons stack vertically if they don't fit */
+  .card-title {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .card-header-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Shrink page header padding and stack nicely */
+  header {
+    padding: 12px 16px !important;
+  }
+
+  /* Shrink nav bar to fit screens without horizontal scroll */
+  .nav-container {
+    width: 100%;
+    border-radius: var(--radius-md);
+  }
+
+  .nav-item {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 4px;
+    font-size: 10px;
+    border-radius: var(--radius-md);
+  }
+
+  .nav-item .material-icons {
+    font-size: 16px;
+  }
+
+  /* Make sticky control row shorter and stack controls neatly */
+  .control-row {
+    padding: 8px !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .tab-container, .view-mode-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: var(--radius-md) !important;
+    width: 100%;
+  }
+
+  .tab-btn, .view-btn {
+    flex: 1;
+    text-align: center;
+    padding: 6px 8px;
+    font-size: 11px;
+    border-radius: var(--radius-md) !important;
+  }
+
+  /* Inputs padding adjustment */
+  input[type="number"], select {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .toggle-group {
+    padding: 10px 12px;
+  }
+
+  .slider-container {
+    padding: 12px;
+  }
+
+  /* Tooltips sizing on mobile */
+  .tooltip-text {
+    width: 220px;
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 380px) {
+  /* On extremely narrow screens, hide labels/texts in navigation to save space */
+  .nav-item span:last-child {
+    display: none;
+  }
+}
+
+/* --- Progressive Slab Visualizer Chart Bar --- */
+.slab-bar-container {
+  display: flex;
+  height: 16px;
+  width: 100%;
+  background-color: var(--md-sys-color-surface-variant);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.slab-segment {
+  height: 100%;
+  transition: width 0.5s ease-in-out;
+  position: relative;
+  cursor: help;
+}
+
+/* Colors for progressive tax brackets in Nepal */
+.slab-seg-0 { background-color: #A7F3D0; }  /* 0% (SST Waived) - light green */
+.slab-seg-1 { background-color: #34D399; }  /* 1% SST - green */
+.slab-seg-10 { background-color: #FBBF24; } /* 10% - orange */
+.slab-seg-20 { background-color: #F87171; } /* 20% - light red */
+.slab-seg-27 { background-color: #EF4444; } /* 27% - red */
+.slab-seg-29 { background-color: #B91C1C; } /* 29% - dark red */
+.slab-seg-30 { background-color: #EF4444; } /* 30% for 82/83 single/married */
+.slab-seg-36 { background-color: #DC2626; } /* 36% for 82/83 */
+.slab-seg-39 { background-color: #991B1B; } /* 39% for 82/83 */
+
+.slab-bar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 12px;
+  row-gap: 4px;
+  margin-top: 6px;
+  font-size: 10px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* --- Smart Tax Optimization Cards --- */
+.opt-tip-item {
+  background: var(--md-sys-color-surface-variant);
+  border-left: 4px solid var(--md-sys-color-primary);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: var(--transition-smooth);
+}
+
+.opt-tip-item:hover {
+  transform: translateX(4px);
+  background: var(--md-sys-color-outline-variant);
+}
+
+.opt-tip-icon {
+  font-size: 18px;
+  color: var(--md-sys-color-primary);
+  margin-top: 1px;
+}
+
+.opt-tip-text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.opt-tip-title {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 2px;
+}
+
+.opt-tip-desc {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* --- Print Stylesheet --- */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12px !important;
+  }
+
+  header, 
+  .control-row, 
+  #diff-mode-container, 
+  #input-container, 
+  #nego-input-container, 
+  .chart-container, 
+  #optimization-tips-card, 
+  #pwa-banner, 
+  footer,
+  #btn-export-pdf,
+  .card-header-btn {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .app-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .results-pane {
+    width: 100% !important;
+  }
+
+  .side-by-side-results {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+    page-break-inside: avoid;
+  }
+
+  .card {
+    background: #ffffff !important;
+    border: 1px solid #cccccc !important;
+    box-shadow: none !important;
+    padding: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .table-card {
+    border: none !important;
+    width: 100% !important;
+  }
+
+  table {
+    font-size: 11px !important;
+  }
+
+  th, td {
+    padding: 6px 8px !important;
+    border-bottom: 1px solid #dddddd !important;
+  }
+
+  .highlight-positive {
+    color: #047857 !important;
+    font-weight: bold !important;
+  }
+
+  .highlight-negative {
+    color: #b91c1c !important;
+    font-weight: bold !important;
+  }
+
+  .net-highlight {
+    background: #f3f4f6 !important;
+    color: #000000 !important;
+  }
+}
+
+
+
+

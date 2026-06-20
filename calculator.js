@@ -152,14 +152,26 @@ export function calculateTax({
   medicalExpenses,
   splitBonus,
   monthlyFreelanceIncome,
-  annualOtherIncome
+  annualOtherIncome,
+  ycotekMode = false,
+  ycotekDepositGratuity = true
 }) {
   // 1. Initial calculations
   const basicSalaryAnnual = (monthlyBasicSalary || 0) * 12;
-  const allowancesAnnual = (monthlyAllowances || 0) * 12;
   const bonusAnnual = annualBonus || 0;
   const freelanceAnnual = (monthlyFreelanceIncome || 0) * 12;
   const otherAnnual = annualOtherIncome || 0;
+
+  // YCOTEK Gratuity Calculations
+  const gratuityMonthly = ycotekMode ? (monthlyBasicSalary || 0) * 0.0833 : 0;
+  const gratuityAnnual = gratuityMonthly * 12;
+  const adjustedAllowancesMonthly = ycotekMode
+    ? Math.max(0, (monthlyAllowances || 0) - gratuityMonthly)
+    : (monthlyAllowances || 0);
+  const adjustedAllowancesAnnual = adjustedAllowancesMonthly * 12;
+
+  // Allowances Annual (used in calculation)
+  const allowancesAnnual = adjustedAllowancesAnnual;
 
   // TDS Calculations
   const freelanceTDS = freelanceAnnual * 0.15;
@@ -173,6 +185,9 @@ export function calculateTax({
   // EPF Contributions (Standard is 10% employee, 10% employer of basic salary)
   const employeeEPFAnnual = useEPF ? basicSalaryAnnual * 0.10 : 0;
   const employerEPFAnnual = useEPF ? basicSalaryAnnual * 0.10 : 0;
+
+  // Employer Gratuity (if deposited, it is an employer retirement contribution)
+  const employerGratuityAnnual = (ycotekMode && ycotekDepositGratuity) ? gratuityAnnual : 0;
 
   // CIT Contributions
   const citAnnual = (citMonthly || 0) * 12;
@@ -191,9 +206,12 @@ export function calculateTax({
   }
 
   // 3. Compute tax WITH bonus (Actual total annual tax)
-  const grossCashSalaryAnnual = basicSalaryAnnual + allowancesAnnual + bonusAnnual + freelanceAnnual + otherAnnual;
-  const assessableIncome = grossCashSalaryAnnual + employerSSFAnnual + employerEPFAnnual;
-  const totalRetirementContribution = employeeSSFAnnual + employerSSFAnnual + employeeEPFAnnual + employerEPFAnnual + citAnnual;
+  // If ycotekDepositGratuity is false, gratuity is paid in cash, so we add it to grossCashSalaryAnnual.
+  // If true, it is deposited (excluded from gross cash salary).
+  const cashGratuityAnnual = (ycotekMode && !ycotekDepositGratuity) ? gratuityAnnual : 0;
+  const grossCashSalaryAnnual = basicSalaryAnnual + allowancesAnnual + cashGratuityAnnual + bonusAnnual + freelanceAnnual + otherAnnual;
+  const assessableIncome = grossCashSalaryAnnual + employerSSFAnnual + employerEPFAnnual + employerGratuityAnnual;
+  const totalRetirementContribution = employeeSSFAnnual + employerSSFAnnual + employeeEPFAnnual + employerEPFAnnual + citAnnual + employerGratuityAnnual;
 
   const resultWithBonus = computeTaxLiability({
     assessableIncome,
@@ -210,8 +228,8 @@ export function calculateTax({
   });
 
   // 4. Compute tax WITHOUT bonus (Base tax strictly on base salary + allowances + freelance + other)
-  const grossCashSalaryNoBonus = basicSalaryAnnual + allowancesAnnual + freelanceAnnual + otherAnnual;
-  const assessableIncomeNoBonus = grossCashSalaryNoBonus + employerSSFAnnual + employerEPFAnnual;
+  const grossCashSalaryNoBonus = basicSalaryAnnual + allowancesAnnual + cashGratuityAnnual + freelanceAnnual + otherAnnual;
+  const assessableIncomeNoBonus = grossCashSalaryNoBonus + employerSSFAnnual + employerEPFAnnual + employerGratuityAnnual;
 
   const resultNoBonus = computeTaxLiability({
     assessableIncome: assessableIncomeNoBonus,
@@ -237,16 +255,18 @@ export function calculateTax({
   const employeeOutofPocketDeductions = employeeSSFAnnual + employeeEPFAnnual + citAnnual;
   const netCashInHandAnnual = Math.max(0, grossCashSalaryAnnual - employeeOutofPocketDeductions - finalTaxLiability);
 
-  // If splitBonus is true: distribute total net cash equally.
-  // If splitBonus is false: monthly cash in hand is monthly base + allowances + freelance minus monthly retirement and base tax without bonus.
-  // Note: freelance TDS (15%) is also deducted monthly at source for cash flow.
+  // Cash allowances monthly calculation for netCashInHandMonthly
+  const cashAllowancesMonthly = ycotekMode
+    ? (ycotekDepositGratuity ? adjustedAllowancesMonthly : (adjustedAllowancesMonthly + gratuityMonthly))
+    : (monthlyAllowances || 0);
+
   const netCashInHandMonthly = splitBonus
     ? netCashInHandAnnual / 12
-    : Math.max(0, ((monthlyBasicSalary || 0) + (monthlyAllowances || 0) + (monthlyFreelanceIncome || 0)) - (employeeSSFAnnual / 12 + employeeEPFAnnual / 12 + (citMonthly || 0)) - (taxWithoutBonus / 12) - (freelanceTDS / 12));
+    : Math.max(0, ((monthlyBasicSalary || 0) + cashAllowancesMonthly + (monthlyFreelanceIncome || 0)) - (employeeSSFAnnual / 12 + employeeEPFAnnual / 12 + (citMonthly || 0)) - (taxWithoutBonus / 12) - (freelanceTDS / 12));
 
-  const totalRetirementSavingsAnnual = employeeSSFAnnual + employerSSFAnnual + employeeEPFAnnual + employerEPFAnnual + citAnnual;
+  const totalRetirementSavingsAnnual = employeeSSFAnnual + employerSSFAnnual + employeeEPFAnnual + employerEPFAnnual + citAnnual + employerGratuityAnnual;
 
-  const costToCompany = grossCashSalaryAnnual + employerSSFAnnual + employerEPFAnnual;
+  const costToCompany = grossCashSalaryAnnual + employerSSFAnnual + employerEPFAnnual + employerGratuityAnnual;
   const marginalTaxOnBonus = finalTaxLiability - taxWithoutBonus;
   const bonusAfterTax = Math.max(0, bonusAnnual - marginalTaxOnBonus);
 
@@ -281,6 +301,11 @@ export function calculateTax({
     otherAnnual,
     freelanceTDS,
     otherTDS,
-    tdsPaidSource
+    tdsPaidSource,
+    // YCOTEK Gratuity Outputs
+    gratuityMonthly,
+    gratuityAnnual,
+    adjustedAllowancesMonthly,
+    adjustedAllowancesAnnual
   };
 }

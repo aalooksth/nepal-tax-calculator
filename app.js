@@ -58,6 +58,8 @@ const remoteSelectA = document.getElementById('remote-a');
 const ssfSwitchA = document.getElementById('ssf-a');
 const epfSwitchA = document.getElementById('epf-a');
 const citInputA = document.getElementById('cit-a'); // numeric input
+const ycotekGratuityWrapperA = document.getElementById('ycotek-gratuity-wrapper-a');
+const ycotekGratuityA = document.getElementById('ycotek-gratuity-a');
 const lifeInputA = document.getElementById('life-a');
 const healthInputA = document.getElementById('health-a');
 const medicalInputA = document.getElementById('medical-a');
@@ -76,6 +78,8 @@ const remoteSelectB = document.getElementById('remote-b');
 const ssfSwitchB = document.getElementById('ssf-b');
 const epfSwitchB = document.getElementById('epf-b');
 const citInputB = document.getElementById('cit-b'); // numeric input
+const ycotekGratuityWrapperB = document.getElementById('ycotek-gratuity-wrapper-b');
+const ycotekGratuityB = document.getElementById('ycotek-gratuity-b');
 const lifeInputB = document.getElementById('life-b');
 const healthInputB = document.getElementById('health-b');
 const medicalInputB = document.getElementById('medical-b');
@@ -243,6 +247,9 @@ btnCopyToB.addEventListener('click', () => {
   ssfSwitchB.selected = ssfSwitchA.selected;
   epfSwitchB.selected = epfSwitchA.selected;
   citInputB.value = citInputA.value;
+  if (ycotekGratuityB && ycotekGratuityA) {
+    ycotekGratuityB.selected = ycotekGratuityA.selected;
+  }
   lifeInputB.value = lifeInputA.value;
   healthInputB.value = healthInputA.value;
   medicalInputB.value = medicalInputA.value;
@@ -262,6 +269,9 @@ btnCopyToA.addEventListener('click', () => {
   ssfSwitchA.selected = ssfSwitchB.selected;
   epfSwitchA.selected = epfSwitchB.selected;
   citInputA.value = citInputB.value;
+  if (ycotekGratuityA && ycotekGratuityB) {
+    ycotekGratuityA.selected = ycotekGratuityB.selected;
+  }
   lifeInputA.value = lifeInputB.value;
   healthInputA.value = healthInputB.value;
   medicalInputA.value = medicalInputB.value;
@@ -283,6 +293,7 @@ btnReset.addEventListener('click', () => {
   ssfSwitchA.selected = true;
   epfSwitchA.selected = false;
   citInputA.value = '';
+  if (ycotekGratuityA) ycotekGratuityA.selected = true;
   lifeInputA.value = '';
   healthInputA.value = '';
   medicalInputA.value = '';
@@ -300,6 +311,7 @@ btnReset.addEventListener('click', () => {
   ssfSwitchB.selected = true;
   epfSwitchB.selected = false;
   citInputB.value = '';
+  if (ycotekGratuityB) ycotekGratuityB.selected = true;
   lifeInputB.value = '';
   healthInputB.value = '';
   medicalInputB.value = '';
@@ -379,6 +391,8 @@ function saveInputsToLocalStorage() {
     medicalB: medicalInputB.value,
     femaleB: femaleSwitchB.selected,
     ycotekMode: ycotekSwitch ? ycotekSwitch.selected : false,
+    ycotekGratuityA: ycotekGratuityA ? ycotekGratuityA.selected : true,
+    ycotekGratuityB: ycotekGratuityB ? ycotekGratuityB.selected : true,
 
     // Negotiation state
     negoBaseProfile: negoBaseProfile.value,
@@ -458,6 +472,13 @@ function loadInputsFromLocalStorage() {
     if (state.ycotekMode !== undefined && ycotekSwitch) {
       ycotekSwitch.selected = state.ycotekMode;
       applyYcotekMode(state.ycotekMode);
+    }
+
+    if (state.ycotekGratuityA !== undefined && ycotekGratuityA) {
+      ycotekGratuityA.selected = state.ycotekGratuityA;
+    }
+    if (state.ycotekGratuityB !== undefined && ycotekGratuityB) {
+      ycotekGratuityB.selected = state.ycotekGratuityB;
     }
 
     // Load Negotiation inputs
@@ -570,13 +591,15 @@ inputsToWatch.forEach(input => {
 
 // Watch custom switches
 [
-  statusSwitchA, ssfSwitchA, epfSwitchA, femaleSwitchA, splitBonusSwitchA,
-  statusSwitchB, ssfSwitchB, epfSwitchB, femaleSwitchB, splitBonusSwitchB
+  statusSwitchA, ssfSwitchA, epfSwitchA, femaleSwitchA, splitBonusSwitchA, ycotekGratuityA,
+  statusSwitchB, ssfSwitchB, epfSwitchB, femaleSwitchB, splitBonusSwitchB, ycotekGratuityB
 ].forEach(sw => {
-  sw.addEventListener('change', () => {
-    triggerRecalculation();
-    if (currentNavTab === 'negotiate') triggerNegotiationRecalculation();
-  });
+  if (sw) {
+    sw.addEventListener('change', () => {
+      triggerRecalculation();
+      if (currentNavTab === 'negotiate') triggerNegotiationRecalculation();
+    });
+  }
 });
 
 // Bind Negotiation inputs to trigger Negotiation Recalculation
@@ -630,6 +653,11 @@ function applyYcotekMode(isYcotek) {
     epfSwitchB.selected = true;
     epfSwitchA.disabled = true;
     epfSwitchB.disabled = true;
+
+    if (ycotekGratuityWrapperA) ycotekGratuityWrapperA.classList.remove('hidden');
+    if (ycotekGratuityWrapperB) ycotekGratuityWrapperB.classList.remove('hidden');
+    if (ycotekGratuityA) ycotekGratuityA.selected = true;
+    if (ycotekGratuityB) ycotekGratuityB.selected = true;
   } else {
     document.body.classList.remove('ycotek-active');
     if (labelAllowanceA) labelAllowanceA.textContent = "Monthly Allowances";
@@ -648,6 +676,9 @@ function applyYcotekMode(isYcotek) {
     ssfSwitchB.disabled = false;
     epfSwitchA.disabled = false;
     epfSwitchB.disabled = false;
+
+    if (ycotekGratuityWrapperA) ycotekGratuityWrapperA.classList.add('hidden');
+    if (ycotekGratuityWrapperB) ycotekGratuityWrapperB.classList.add('hidden');
   }
 }
 
@@ -750,7 +781,9 @@ function triggerRecalculation() {
     healthInsurancePremium: parseFloat(healthInputA.value) || 0,
     medicalExpenses: parseFloat(medicalInputA.value) || 0,
     femaleTaxpayer: femaleSwitchA.selected,
-    splitBonus: splitBonusSwitchA.selected
+    splitBonus: splitBonusSwitchA.selected,
+    ycotekMode: isYcotek,
+    ycotekDepositGratuity: ycotekGratuityA ? ycotekGratuityA.selected : true
   };
 
   // Read Profile B inputs (depends on mode)
@@ -778,7 +811,9 @@ function triggerRecalculation() {
       healthInsurancePremium: parseFloat(healthInputB.value) || 0,
       medicalExpenses: parseFloat(medicalInputB.value) || 0,
       femaleTaxpayer: femaleSwitchB.selected,
-      splitBonus: splitBonusSwitchB.selected
+      splitBonus: splitBonusSwitchB.selected,
+      ycotekMode: isYcotek,
+      ycotekDepositGratuity: ycotekGratuityB ? ycotekGratuityB.selected : true
     };
   }
 
@@ -946,9 +981,19 @@ function updateDetailedTable(res82, res83, inputsA, inputsB) {
   let html = '';
 
   // 1. Gross Earnings
+  const isYcotek = inputsA.ycotekMode || inputsB.ycotekMode;
+  const allowanceLabel = isYcotek ? 'Annual Allowances (Adjusted for Gratuity Carve-out)' : 'Annual Allowances';
+
   html += createRow('Gross Cash Salary components:', 0, 0, true);
   html += createRow('Annual Basic Salary', inputsA.monthlyBasicSalary * 12, inputsB.monthlyBasicSalary * 12);
-  html += createRow('Annual Allowances', inputsA.monthlyAllowances * 12, inputsB.monthlyAllowances * 12);
+  html += createRow(allowanceLabel, res82.adjustedAllowancesAnnual, res83.adjustedAllowancesAnnual);
+
+  if (isYcotek) {
+    const cashGratuityA = inputsA.ycotekDepositGratuity ? 0 : res82.gratuityAnnual;
+    const cashGratuityB = inputsB.ycotekDepositGratuity ? 0 : res83.gratuityAnnual;
+    html += createRow('Annual Gratuity (Paid in Cash)', cashGratuityA, cashGratuityB);
+  }
+
   html += createRow('Annual Bonus / Festive Allowance', inputsA.annualBonus, inputsB.annualBonus);
   html += createRow('Annual Freelance / Consultancy Income', res82.freelanceAnnual, res83.freelanceAnnual);
   html += createRow('Annual Other Income (Rent, Interest, etc.)', res82.otherAnnual, res83.otherAnnual);
@@ -959,12 +1004,23 @@ function updateDetailedTable(res82, res83, inputsA, inputsB) {
   html += createRow('Employer Contributions & Cost to Company (CTC):', 0, 0, true);
   html += createRow('Employer SSF (20% basic)', res82.employerSSFAnnual, res83.employerSSFAnnual);
   html += createRow('Employer EPF (10% basic)', res82.employerEPFAnnual, res83.employerEPFAnnual);
+
+  if (isYcotek) {
+    const depGratuityA = inputsA.ycotekDepositGratuity ? res82.gratuityAnnual : 0;
+    const depGratuityB = inputsB.ycotekDepositGratuity ? res83.gratuityAnnual : 0;
+    html += createRow('Employer Gratuity (8.33% basic deposited to CIT)', depGratuityA, depGratuityB);
+  }
+
   html += createRow('Assessable Income (Tax Base)', res82.assessableIncome, res83.assessableIncome, false, true);
   html += createRow('Cost to Company (CTC)', res82.costToCompany, res83.costToCompany, false, true);
 
   // 3. Deductions
+  const retirementDeductionLabel = isYcotek
+    ? 'Retirement Fund (EPF + CIT + Gratuity)'
+    : 'Retirement Fund (SSF + EPF + CIT)';
+
   html += createRow('Allowable Tax Deductions:', 0, 0, true);
-  html += createRow('Retirement Fund (SSF + EPF + CIT)', res82.allowedRetirementDeduction, res83.allowedRetirementDeduction, false, false, true);
+  html += createRow(retirementDeductionLabel, res82.allowedRetirementDeduction, res83.allowedRetirementDeduction, false, false, true);
   html += createRow('Life Insurance Exemption', res82.allowedLifeInsurance, res83.allowedLifeInsurance, false, false, true);
   html += createRow('Health Insurance Exemption', res82.allowedHealthInsurance, res83.allowedHealthInsurance, false, false, true);
   html += createRow('Remote Area Exemption', res82.allowedRemoteArea, res83.allowedRemoteArea, false, false, true);
@@ -1307,6 +1363,7 @@ function generateShareLink() {
   params.set('ssfA', ssfSwitchA.selected);
   params.set('epfA', epfSwitchA.selected);
   params.set('citA', citInputA.value);
+  params.set('gratuityA', ycotekGratuityA ? ycotekGratuityA.selected : true);
   params.set('lifeA', lifeInputA.value);
   params.set('healthA', healthInputA.value);
   params.set('medicalA', medicalInputA.value);
@@ -1324,6 +1381,7 @@ function generateShareLink() {
   params.set('ssfB', ssfSwitchB.selected);
   params.set('epfB', epfSwitchB.selected);
   params.set('citB', citInputB.value);
+  params.set('gratuityB', ycotekGratuityB ? ycotekGratuityB.selected : true);
   params.set('lifeB', lifeInputB.value);
   params.set('healthB', healthInputB.value);
   params.set('medicalB', medicalInputB.value);
@@ -1367,6 +1425,13 @@ function loadInputsFromUrl() {
       const isYcotek = urlParams.get('ycotek') === 'true';
       ycotekSwitch.selected = isYcotek;
       applyYcotekMode(isYcotek);
+    }
+
+    if (urlParams.has('gratuityA') && ycotekGratuityA) {
+      ycotekGratuityA.selected = urlParams.get('gratuityA') === 'true';
+    }
+    if (urlParams.has('gratuityB') && ycotekGratuityB) {
+      ycotekGratuityB.selected = urlParams.get('gratuityB') === 'true';
     }
 
     // Profile A
@@ -1465,6 +1530,7 @@ function getCalculatorInputs(suffix) {
   const medicalEl = isA ? medicalInputA : medicalInputB;
   const femaleEl = isA ? femaleSwitchA : femaleSwitchB;
   const splitBonusEl = isA ? splitBonusSwitchA : splitBonusSwitchB;
+  const gratuityEl = isA ? ycotekGratuityA : ycotekGratuityB;
 
   return {
     monthlyBasicSalary: parseFloat(basicEl.value) || 0,
@@ -1481,7 +1547,9 @@ function getCalculatorInputs(suffix) {
     healthInsurancePremium: parseFloat(healthEl.value) || 0,
     medicalExpenses: parseFloat(medicalEl.value) || 0,
     femaleTaxpayer: femaleEl.selected,
-    splitBonus: splitBonusEl.selected
+    splitBonus: splitBonusEl.selected,
+    ycotekMode: ycotekSwitch ? ycotekSwitch.selected : false,
+    ycotekDepositGratuity: gratuityEl ? gratuityEl.selected : true
   };
 }
 
@@ -1586,9 +1654,19 @@ function updateNegoDetailedTable(resBase, resNego, inputsBase, inputsNego) {
   let html = '';
 
   // 1. Gross Earnings
+  const isYcotek = inputsBase.ycotekMode || inputsNego.ycotekMode;
+  const allowanceLabel = isYcotek ? 'Annual Allowances (Adjusted for Gratuity Carve-out)' : 'Annual Allowances';
+
   html += createRow('Gross Cash Salary components:', 0, 0, true);
   html += createRow('Annual Basic Salary', inputsBase.monthlyBasicSalary * 12, inputsNego.monthlyBasicSalary * 12);
-  html += createRow('Annual Allowances', inputsBase.monthlyAllowances * 12, inputsNego.monthlyAllowances * 12);
+  html += createRow(allowanceLabel, resBase.adjustedAllowancesAnnual, resNego.adjustedAllowancesAnnual);
+
+  if (isYcotek) {
+    const cashGratuityBase = inputsBase.ycotekDepositGratuity ? 0 : resBase.gratuityAnnual;
+    const cashGratuityNego = inputsNego.ycotekDepositGratuity ? 0 : resNego.gratuityAnnual;
+    html += createRow('Annual Gratuity (Paid in Cash)', cashGratuityBase, cashGratuityNego);
+  }
+
   html += createRow('Annual Bonus / Festive Allowance', inputsBase.annualBonus, inputsNego.annualBonus);
   html += createRow('Annual Freelance / Consultancy Income', resBase.freelanceAnnual, resNego.freelanceAnnual);
   html += createRow('Annual Other Income', resBase.otherAnnual, resNego.otherAnnual);
@@ -1599,12 +1677,23 @@ function updateNegoDetailedTable(resBase, resNego, inputsBase, inputsNego) {
   html += createRow('Employer Contributions & Cost to Company (CTC):', 0, 0, true);
   html += createRow('Employer SSF (20% basic)', resBase.employerSSFAnnual, resNego.employerSSFAnnual);
   html += createRow('Employer EPF (10% basic)', resBase.employerEPFAnnual, resNego.employerEPFAnnual);
+
+  if (isYcotek) {
+    const depGratuityBase = inputsBase.ycotekDepositGratuity ? resBase.gratuityAnnual : 0;
+    const depGratuityNego = inputsNego.ycotekDepositGratuity ? resNego.gratuityAnnual : 0;
+    html += createRow('Employer Gratuity (8.33% basic deposited to CIT)', depGratuityBase, depGratuityNego);
+  }
+
   html += createRow('Assessable Income (Tax Base)', resBase.assessableIncome, resNego.assessableIncome, false, true);
   html += createRow('Cost to Company (CTC)', resBase.costToCompany, resNego.costToCompany, false, true);
 
   // 3. Deductions
+  const retirementDeductionLabel = isYcotek
+    ? 'Retirement Fund (EPF + CIT + Gratuity)'
+    : 'Retirement Fund (SSF + EPF + CIT)';
+
   html += createRow('Allowable Tax Deductions:', 0, 0, true);
-  html += createRow('Retirement Fund (SSF + EPF + CIT)', resBase.allowedRetirementDeduction, resNego.allowedRetirementDeduction, false, false, true);
+  html += createRow(retirementDeductionLabel, resBase.allowedRetirementDeduction, resNego.allowedRetirementDeduction, false, false, true);
   html += createRow('Life Insurance Exemption', resBase.allowedLifeInsurance, resNego.allowedLifeInsurance, false, false, true);
   html += createRow('Health Insurance Exemption', resBase.allowedHealthInsurance, resNego.allowedHealthInsurance, false, false, true);
   html += createRow('Remote Area Exemption', resBase.allowedRemoteArea, resNego.allowedRemoteArea, false, false, true);

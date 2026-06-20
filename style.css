@@ -1330,6 +1330,17 @@ body.ycotek-active {
   color: var(--md-sys-color-on-surface-variant);
 }
 
+/* Portal Link Items Hover Effects */
+.portal-link-item {
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.portal-link-item:hover .card {
+  transform: translateY(-2px);
+  box-shadow: var(--md-sys-elevation-2);
+  border-color: var(--md-sys-color-primary) !important;
+}
+
 /* --- Print Stylesheet --- */
 @media print {
   body {

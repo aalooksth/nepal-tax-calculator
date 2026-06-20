@@ -865,6 +865,72 @@
           </table>
         </div>
       </div>
+
+      <!-- Useful Portal Links Section -->
+      <div class="card features-table-card" style="margin-top: 24px;">
+        <div class="card-title">
+          <span class="material-icons" style="color: var(--md-sys-color-primary);">link</span>
+          <span>Useful Official Portals & Resources</span>
+        </div>
+        <p style="font-size: 14px; color: var(--md-sys-color-on-surface-variant); margin-top: 8px; margin-bottom: 16px;">
+          Access the official Nepalese government and organizational portals to manage your tax registration, view contribution statements, or check retirement balances.
+        </p>
+        <div class="links-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+          
+          <!-- IRD Link -->
+          <a href="https://ird.gov.np" target="_blank" class="portal-link-item" style="text-decoration: none; color: inherit;">
+            <div class="card" style="margin: 0; padding: 16px; height: 100%; border: 1px solid var(--md-sys-color-outline-variant);">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="material-icons" style="color: #EF4444; font-size: 28px;">account_balance</span>
+                <div>
+                  <h4 style="margin: 0; font-family: var(--font-title); font-size: 15px; color: var(--md-sys-color-on-surface);">Inland Revenue Department (IRD)</h4>
+                  <p style="margin: 4px 0 0 0; font-size: 11px; color: var(--md-sys-color-on-surface-variant);">Tax filings, PAN registration, tax calculators & official circulars.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- SSF Link -->
+          <a href="https://ssf.gov.np" target="_blank" class="portal-link-item" style="text-decoration: none; color: inherit;">
+            <div class="card" style="margin: 0; padding: 16px; height: 100%; border: 1px solid var(--md-sys-color-outline-variant);">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="material-icons" style="color: #10B981; font-size: 28px;">groups</span>
+                <div>
+                  <h4 style="margin: 0; font-family: var(--font-title); font-size: 15px; color: var(--md-sys-color-on-surface);">Social Security Fund (SSF)</h4>
+                  <p style="margin: 4px 0 0 0; font-size: 11px; color: var(--md-sys-color-on-surface-variant);">Contributor logins, social security schemes, claims & statements.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- CIT / NLK Link -->
+          <a href="https://nlk.org.np" target="_blank" class="portal-link-item" style="text-decoration: none; color: inherit;">
+            <div class="card" style="margin: 0; padding: 16px; height: 100%; border: 1px solid var(--md-sys-color-outline-variant);">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="material-icons" style="color: #3B82F6; font-size: 28px;">savings</span>
+                <div>
+                  <h4 style="margin: 0; font-family: var(--font-title); font-size: 15px; color: var(--md-sys-color-on-surface);">Citizen Investment Trust (CIT)</h4>
+                  <p style="margin: 4px 0 0 0; font-size: 11px; color: var(--md-sys-color-on-surface-variant);">Nagarik Lagani Kosh. E-returns, statements, and schemes.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- EPF Link -->
+          <a href="https://epf.org.np" target="_blank" class="portal-link-item" style="text-decoration: none; color: inherit;">
+            <div class="card" style="margin: 0; padding: 16px; height: 100%; border: 1px solid var(--md-sys-color-outline-variant);">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="material-icons" style="color: #F59E0B; font-size: 28px;">account_balance_wallet</span>
+                <div>
+                  <h4 style="margin: 0; font-family: var(--font-title); font-size: 15px; color: var(--md-sys-color-on-surface);">Employees Provident Fund (EPF)</h4>
+                  <p style="margin: 4px 0 0 0; font-size: 11px; color: var(--md-sys-color-on-surface-variant);">Karmachari Sanchaya Kosh. Logins, statements, and loan portals.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </div>
     </div>
 
     <!-- Salary Negotiation View Panel -->
@@ -1195,14 +1261,21 @@
 
   <!-- Footer Info -->
   <footer>
+    <div style="margin-bottom: 12px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; font-size: 13px;">
+      <span style="font-weight: 700; opacity: 0.9;">Useful Portals:</span>
+      <a href="https://ird.gov.np" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">IRD (Tax Portal)</a>
+      <span style="opacity: 0.3;">|</span>
+      <a href="https://ssf.gov.np" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">SSF (Social Security)</a>
+      <span style="opacity: 0.3;">|</span>
+      <a href="https://nlk.org.np" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">CIT (Investments)</a>
+      <span style="opacity: 0.3;">|</span>
+      <a href="https://epf.org.np" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">EPF (Provident Fund)</a>
+    </div>
     <div>
       <strong>Nepal Cash in Hand Tax Calculator</strong> &copy; 2026. Made with Material 3 UI.
     </div>
-    <div style="max-width: 600px; margin: 0 auto; line-height: 1.4; opacity: 0.8;">
+    <div style="max-width: 600px; margin: 8px auto 0 auto; line-height: 1.4; opacity: 0.8; font-size: 11px;">
       Disclaimer: This calculator is based on the proposed budget and tax slab adjustments for Fiscal Year 2083/84 (announced in Jestha 2083) and the active tax rates of Fiscal Year 2082/83. Final tax structures are subject to changes in the enactment of the Finance Act. Social Security Tax (SST) is 1% for standard earners, which is waived if contributing to the Social Security Fund (SSF).
-    </div>
-    <div>
-      <a href="https://ird.gov.np" target="_blank" rel="noopener">Inland Revenue Department (IRD) Nepal</a>
     </div>
   </footer>
 

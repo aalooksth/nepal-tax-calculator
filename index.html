@@ -106,11 +106,11 @@
           <button id="view-83" class="view-btn">FY 2083/84 Only</button>
         </div>
 
-        <!-- YCOTEK Mode Switch -->
+        <!-- Mode Y Switch -->
         <div class="has-tooltip" style="background: var(--md-sys-color-surface-variant); padding: 4px 16px; border-radius: var(--radius-full); display: inline-flex; align-items: center; gap: 8px; box-shadow: inset var(--elevation-1); height: 40px;">
-          <span style="font-family: var(--font-title); font-size: 13px; font-weight: 700; color: var(--md-sys-color-primary);">YCOTEK Mode</span>
-          <md-switch id="ycotek-mode" style="transform: scale(0.8);"></md-switch>
-          <span class="tooltip-text" style="bottom: 115%;">Applies YCOTEK company settings: forces EPF ON, disables SSF/Remote/Health/Medical, and subtracts 10% basic salary from CIT.</span>
+          <span style="font-family: var(--font-title); font-size: 13px; font-weight: 700; color: var(--md-sys-color-primary);">Mode Y</span>
+          <md-switch id="mode-y" style="transform: scale(0.8);"></md-switch>
+          <span class="tooltip-text" style="bottom: 115%;">Applies Mode Y company settings: forces EPF ON, disables SSF/Remote/Health/Medical, and subtracts 10% basic salary from CIT.</span>
         </div>
 
         <button id="btn-reset" class="view-btn" style="background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); display: flex; align-items: center; gap: 4px;">
@@ -250,13 +250,13 @@
               <span class="tooltip-text">Citizen Investment Trust voluntary contribution. Eligible for tax deduction up to 1/3 of total income or Rs. 500,000 combined limit.</span>
             </div>
 
-            <!-- YCOTEK Gratuity Toggle -->
-            <div id="ycotek-gratuity-wrapper-a" class="toggle-group has-tooltip hidden">
+            <!-- Employer Gratuity Toggle -->
+            <div id="gratuity-wrapper-a" class="toggle-group has-tooltip">
               <div class="toggle-label-container">
-                <label for="ycotek-gratuity-a">Deposit Gratuity to CIT Fund</label>
+                <label for="gratuity-a">Deposit Gratuity to CIT Fund</label>
                 <span class="toggle-desc">8.33% Basic Salary deposited to CIT Gratuity Fund</span>
               </div>
-              <md-switch id="ycotek-gratuity-a" selected></md-switch>
+              <md-switch id="gratuity-a" selected></md-switch>
               <span class="tooltip-text">When ON, gratuity is deposited to CIT Gratuity Fund (tax-deductible). When OFF, gratuity is paid out directly in cash (taxed).</span>
             </div>
 
@@ -405,13 +405,13 @@
               <span class="tooltip-text">Citizen Investment Trust voluntary contribution. Eligible for tax deduction up to 1/3 of total income or Rs. 500,000 combined limit.</span>
             </div>
 
-            <!-- YCOTEK Gratuity Toggle -->
-            <div id="ycotek-gratuity-wrapper-b" class="toggle-group has-tooltip hidden">
+            <!-- Employer Gratuity Toggle -->
+            <div id="gratuity-wrapper-b" class="toggle-group has-tooltip">
               <div class="toggle-label-container">
-                <label for="ycotek-gratuity-b">Deposit Gratuity to CIT Fund</label>
+                <label for="gratuity-b">Deposit Gratuity to CIT Fund</label>
                 <span class="toggle-desc">8.33% Basic Salary deposited to CIT Gratuity Fund</span>
               </div>
-              <md-switch id="ycotek-gratuity-b" selected></md-switch>
+              <md-switch id="gratuity-b" selected></md-switch>
               <span class="tooltip-text">When ON, gratuity is deposited to CIT Gratuity Fund (tax-deductible). When OFF, gratuity is paid out directly in cash (taxed).</span>
             </div>
 

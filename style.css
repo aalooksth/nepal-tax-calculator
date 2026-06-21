@@ -1056,8 +1056,8 @@ footer a {
   color: var(--md-sys-color-primary);
 }
 
-/* --- YCOTEK Active Theme Color Scheme --- */
-body.ycotek-active {
+/* --- Mode Y Active Theme Color Scheme --- */
+body.mode-y-active {
   --md-sys-color-primary: #00796B;
   --md-sys-color-primary-container: #B2DFDB;
   --md-sys-color-on-primary-container: #004D40;
@@ -1066,7 +1066,7 @@ body.ycotek-active {
   background-image: var(--app-gradient-background);
 }
 
-[data-theme="dark"] body.ycotek-active {
+[data-theme="dark"] body.mode-y-active {
   --md-sys-color-primary: #80CBC4;
   --md-sys-color-primary-container: #004D40;
   --md-sys-color-on-primary-container: #E0F2F1;

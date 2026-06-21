@@ -39,7 +39,7 @@ const btnCopyToA = document.getElementById('btn-copy-to-a');
 const btnReset = document.getElementById('btn-reset');
 const btnShare = document.getElementById('btn-share');
 const btnExportPdf = document.getElementById('btn-export-pdf');
-const ycotekSwitch = document.getElementById('ycotek-mode');
+const modeYSwitch = document.getElementById('mode-y');
 const structureTabsContainer = document.getElementById('structure-tabs-container');
 
 // Comparison selector (New vs New / Existing vs New)
@@ -58,8 +58,8 @@ const remoteSelectA = document.getElementById('remote-a');
 const ssfSwitchA = document.getElementById('ssf-a');
 const epfSwitchA = document.getElementById('epf-a');
 const citInputA = document.getElementById('cit-a'); // numeric input
-const ycotekGratuityWrapperA = document.getElementById('ycotek-gratuity-wrapper-a');
-const ycotekGratuityA = document.getElementById('ycotek-gratuity-a');
+const gratuityWrapperA = document.getElementById('gratuity-wrapper-a');
+const gratuityA = document.getElementById('gratuity-a');
 const lifeInputA = document.getElementById('life-a');
 const healthInputA = document.getElementById('health-a');
 const medicalInputA = document.getElementById('medical-a');
@@ -78,8 +78,8 @@ const remoteSelectB = document.getElementById('remote-b');
 const ssfSwitchB = document.getElementById('ssf-b');
 const epfSwitchB = document.getElementById('epf-b');
 const citInputB = document.getElementById('cit-b'); // numeric input
-const ycotekGratuityWrapperB = document.getElementById('ycotek-gratuity-wrapper-b');
-const ycotekGratuityB = document.getElementById('ycotek-gratuity-b');
+const gratuityWrapperB = document.getElementById('gratuity-wrapper-b');
+const gratuityB = document.getElementById('gratuity-b');
 const lifeInputB = document.getElementById('life-b');
 const healthInputB = document.getElementById('health-b');
 const medicalInputB = document.getElementById('medical-b');
@@ -247,8 +247,8 @@ btnCopyToB.addEventListener('click', () => {
   ssfSwitchB.selected = ssfSwitchA.selected;
   epfSwitchB.selected = epfSwitchA.selected;
   citInputB.value = citInputA.value;
-  if (ycotekGratuityB && ycotekGratuityA) {
-    ycotekGratuityB.selected = ycotekGratuityA.selected;
+  if (gratuityB && gratuityA) {
+    gratuityB.selected = gratuityA.selected;
   }
   lifeInputB.value = lifeInputA.value;
   healthInputB.value = healthInputA.value;
@@ -269,8 +269,8 @@ btnCopyToA.addEventListener('click', () => {
   ssfSwitchA.selected = ssfSwitchB.selected;
   epfSwitchA.selected = epfSwitchB.selected;
   citInputA.value = citInputB.value;
-  if (ycotekGratuityA && ycotekGratuityB) {
-    ycotekGratuityA.selected = ycotekGratuityB.selected;
+  if (gratuityA && gratuityB) {
+    gratuityA.selected = gratuityB.selected;
   }
   lifeInputA.value = lifeInputB.value;
   healthInputA.value = healthInputB.value;
@@ -293,7 +293,7 @@ btnReset.addEventListener('click', () => {
   ssfSwitchA.selected = true;
   epfSwitchA.selected = false;
   citInputA.value = '';
-  if (ycotekGratuityA) ycotekGratuityA.selected = true;
+  if (gratuityA) gratuityA.selected = true;
   lifeInputA.value = '';
   healthInputA.value = '';
   medicalInputA.value = '';
@@ -311,7 +311,7 @@ btnReset.addEventListener('click', () => {
   ssfSwitchB.selected = true;
   epfSwitchB.selected = false;
   citInputB.value = '';
-  if (ycotekGratuityB) ycotekGratuityB.selected = true;
+  if (gratuityB) gratuityB.selected = true;
   lifeInputB.value = '';
   healthInputB.value = '';
   medicalInputB.value = '';
@@ -331,9 +331,9 @@ btnReset.addEventListener('click', () => {
   currentViewMode = 'compare';
   diffModeSelect.value = '82_vs_83';
   currentNavTab = 'calc';
-  if (ycotekSwitch) {
-    ycotekSwitch.selected = false;
-    applyYcotekMode(false);
+  if (modeYSwitch) {
+    modeYSwitch.selected = false;
+    applyModeY(false);
   }
 
   // Sync navigation view
@@ -344,10 +344,10 @@ btnReset.addEventListener('click', () => {
 // Watch comparison basis select dropdown
 diffModeSelect.addEventListener('change', triggerRecalculation);
 
-// Watch YCOTEK Mode switch
-if (ycotekSwitch) {
-  ycotekSwitch.addEventListener('change', (e) => {
-    applyYcotekMode(e.target.selected);
+// Watch Mode Y Switch
+if (modeYSwitch) {
+  modeYSwitch.addEventListener('change', (e) => {
+    applyModeY(e.target.selected);
     triggerRecalculation();
   });
 }
@@ -390,9 +390,9 @@ function saveInputsToLocalStorage() {
     healthB: healthInputB.value,
     medicalB: medicalInputB.value,
     femaleB: femaleSwitchB.selected,
-    ycotekMode: ycotekSwitch ? ycotekSwitch.selected : false,
-    ycotekGratuityA: ycotekGratuityA ? ycotekGratuityA.selected : true,
-    ycotekGratuityB: ycotekGratuityB ? ycotekGratuityB.selected : true,
+    modeY: modeYSwitch ? modeYSwitch.selected : false,
+    gratuityA: gratuityA ? gratuityA.selected : true,
+    gratuityB: gratuityB ? gratuityB.selected : true,
 
     // Negotiation state
     negoBaseProfile: negoBaseProfile.value,
@@ -469,16 +469,16 @@ function loadInputsFromLocalStorage() {
     if (state.medicalB !== undefined) medicalInputB.value = state.medicalB;
     if (state.femaleB !== undefined) femaleSwitchB.selected = state.femaleB;
 
-    if (state.ycotekMode !== undefined && ycotekSwitch) {
-      ycotekSwitch.selected = state.ycotekMode;
-      applyYcotekMode(state.ycotekMode);
+    if (state.modeY !== undefined && modeYSwitch) {
+      modeYSwitch.selected = state.modeY;
+      applyModeY(state.modeY);
     }
 
-    if (state.ycotekGratuityA !== undefined && ycotekGratuityA) {
-      ycotekGratuityA.selected = state.ycotekGratuityA;
+    if (state.gratuityA !== undefined && gratuityA) {
+      gratuityA.selected = state.gratuityA;
     }
-    if (state.ycotekGratuityB !== undefined && ycotekGratuityB) {
-      ycotekGratuityB.selected = state.ycotekGratuityB;
+    if (state.gratuityB !== undefined && gratuityB) {
+      gratuityB.selected = state.gratuityB;
     }
 
     // Load Negotiation inputs
@@ -591,8 +591,8 @@ inputsToWatch.forEach(input => {
 
 // Watch custom switches
 [
-  statusSwitchA, ssfSwitchA, epfSwitchA, femaleSwitchA, splitBonusSwitchA, ycotekGratuityA,
-  statusSwitchB, ssfSwitchB, epfSwitchB, femaleSwitchB, splitBonusSwitchB, ycotekGratuityB
+  statusSwitchA, ssfSwitchA, epfSwitchA, femaleSwitchA, splitBonusSwitchA, gratuityA,
+  statusSwitchB, ssfSwitchB, epfSwitchB, femaleSwitchB, splitBonusSwitchB, gratuityB
 ].forEach(sw => {
   if (sw) {
     sw.addEventListener('change', () => {
@@ -612,15 +612,15 @@ negoInputsToWatch.forEach(input => {
   input.addEventListener('change', triggerNegotiationRecalculation);
 });
 
-// --- YCOTEK Mode Helper ---
-function applyYcotekMode(isYcotek) {
+// --- Mode Y Helper ---
+function applyModeY(isModeY) {
   const labelAllowanceA = document.querySelector('label[for="allowance-a"]');
   const labelAllowanceB = document.querySelector('label[for="allowance-b"]');
   const labelCitA = document.querySelector('label[for="cit-a"]');
   const labelCitB = document.querySelector('label[for="cit-b"]');
 
-  if (isYcotek) {
-    document.body.classList.add('ycotek-active');
+  if (isModeY) {
+    document.body.classList.add('mode-y-active');
     if (labelAllowanceA) labelAllowanceA.textContent = "Allowance + Add allowance (Lunch, Transport, Mobile, ...)";
     if (labelAllowanceB) labelAllowanceB.textContent = "Allowance + Add allowance (Lunch, Transport, Mobile, ...)";
     if (labelCitA) labelCitA.textContent = "CIT (Staff's Contribution)";
@@ -653,13 +653,8 @@ function applyYcotekMode(isYcotek) {
     epfSwitchB.selected = true;
     epfSwitchA.disabled = true;
     epfSwitchB.disabled = true;
-
-    if (ycotekGratuityWrapperA) ycotekGratuityWrapperA.classList.remove('hidden');
-    if (ycotekGratuityWrapperB) ycotekGratuityWrapperB.classList.remove('hidden');
-    if (ycotekGratuityA) ycotekGratuityA.selected = true;
-    if (ycotekGratuityB) ycotekGratuityB.selected = true;
   } else {
-    document.body.classList.remove('ycotek-active');
+    document.body.classList.remove('mode-y-active');
     if (labelAllowanceA) labelAllowanceA.textContent = "Monthly Allowances";
     if (labelAllowanceB) labelAllowanceB.textContent = "Monthly Allowances";
     if (labelCitA) labelCitA.textContent = "Monthly Citizen Investment Trust (CIT) Contribution";
@@ -676,9 +671,6 @@ function applyYcotekMode(isYcotek) {
     ssfSwitchB.disabled = false;
     epfSwitchA.disabled = false;
     epfSwitchB.disabled = false;
-
-    if (ycotekGratuityWrapperA) ycotekGratuityWrapperA.classList.add('hidden');
-    if (ycotekGratuityWrapperB) ycotekGratuityWrapperB.classList.add('hidden');
   }
 }
 
@@ -758,10 +750,10 @@ function triggerRecalculation() {
     }
   }
 
-  const isYcotek = ycotekSwitch ? ycotekSwitch.selected : false;
+  const isModeY = modeYSwitch ? modeYSwitch.selected : false;
   const basicSalaryValA = parseFloat(basicInputA.value) || 0;
   let citValA = parseFloat(citInputA.value) || 0;
-  if (isYcotek) {
+  if (isModeY) {
     citValA = Math.max(0, citValA - (basicSalaryValA * 0.10));
   }
 
@@ -782,8 +774,8 @@ function triggerRecalculation() {
     medicalExpenses: parseFloat(medicalInputA.value) || 0,
     femaleTaxpayer: femaleSwitchA.selected,
     splitBonus: splitBonusSwitchA.selected,
-    ycotekMode: isYcotek,
-    ycotekDepositGratuity: ycotekGratuityA ? ycotekGratuityA.selected : true
+    modeY: isModeY,
+    depositGratuity: gratuityA ? gratuityA.selected : true
   };
 
   // Read Profile B inputs (depends on mode)
@@ -793,7 +785,7 @@ function triggerRecalculation() {
   } else {
     const basicSalaryValB = parseFloat(basicInputB.value) || 0;
     let citValB = parseFloat(citInputB.value) || 0;
-    if (isYcotek) {
+    if (isModeY) {
       citValB = Math.max(0, citValB - (basicSalaryValB * 0.10));
     }
     inputsB = {
@@ -812,8 +804,8 @@ function triggerRecalculation() {
       medicalExpenses: parseFloat(medicalInputB.value) || 0,
       femaleTaxpayer: femaleSwitchB.selected,
       splitBonus: splitBonusSwitchB.selected,
-      ycotekMode: isYcotek,
-      ycotekDepositGratuity: ycotekGratuityB ? ycotekGratuityB.selected : true
+      modeY: isModeY,
+      depositGratuity: gratuityB ? gratuityB.selected : true
     };
   }
 
@@ -981,18 +973,17 @@ function updateDetailedTable(res82, res83, inputsA, inputsB) {
   let html = '';
 
   // 1. Gross Earnings
-  const isYcotek = inputsA.ycotekMode || inputsB.ycotekMode;
-  const allowanceLabel = isYcotek ? 'Annual Allowances (Adjusted for Gratuity Carve-out)' : 'Annual Allowances';
+  // 1. Gross Earnings
+  const isModeY = inputsA.modeY || inputsB.modeY;
+  const allowanceLabel = 'Annual Allowances (Adjusted for Gratuity Carve-out)';
 
   html += createRow('Gross Cash Salary components:', 0, 0, true);
   html += createRow('Annual Basic Salary', inputsA.monthlyBasicSalary * 12, inputsB.monthlyBasicSalary * 12);
   html += createRow(allowanceLabel, res82.adjustedAllowancesAnnual, res83.adjustedAllowancesAnnual);
 
-  if (isYcotek) {
-    const cashGratuityA = inputsA.ycotekDepositGratuity ? 0 : res82.gratuityAnnual;
-    const cashGratuityB = inputsB.ycotekDepositGratuity ? 0 : res83.gratuityAnnual;
-    html += createRow('Annual Gratuity (Paid in Cash)', cashGratuityA, cashGratuityB);
-  }
+  const cashGratuityA = inputsA.depositGratuity ? 0 : res82.gratuityAnnual;
+  const cashGratuityB = inputsB.depositGratuity ? 0 : res83.gratuityAnnual;
+  html += createRow('Annual Gratuity (Paid in Cash)', cashGratuityA, cashGratuityB);
 
   html += createRow('Annual Bonus / Festive Allowance', inputsA.annualBonus, inputsB.annualBonus);
   html += createRow('Annual Freelance / Consultancy Income', res82.freelanceAnnual, res83.freelanceAnnual);
@@ -1005,19 +996,17 @@ function updateDetailedTable(res82, res83, inputsA, inputsB) {
   html += createRow('Employer SSF (20% basic)', res82.employerSSFAnnual, res83.employerSSFAnnual);
   html += createRow('Employer EPF (10% basic)', res82.employerEPFAnnual, res83.employerEPFAnnual);
 
-  if (isYcotek) {
-    const depGratuityA = inputsA.ycotekDepositGratuity ? res82.gratuityAnnual : 0;
-    const depGratuityB = inputsB.ycotekDepositGratuity ? res83.gratuityAnnual : 0;
-    html += createRow('Employer Gratuity (8.33% basic deposited to CIT)', depGratuityA, depGratuityB);
-  }
+  const depGratuityA = inputsA.depositGratuity ? res82.gratuityAnnual : 0;
+  const depGratuityB = inputsB.depositGratuity ? res83.gratuityAnnual : 0;
+  html += createRow('Employer Gratuity (8.33% basic deposited to CIT)', depGratuityA, depGratuityB);
 
   html += createRow('Assessable Income (Tax Base)', res82.assessableIncome, res83.assessableIncome, false, true);
   html += createRow('Cost to Company (CTC)', res82.costToCompany, res83.costToCompany, false, true);
 
   // 3. Deductions
-  const retirementDeductionLabel = isYcotek
-    ? 'Retirement Fund (EPF + CIT + Gratuity)'
-    : 'Retirement Fund (SSF + EPF + CIT)';
+  const retirementDeductionLabel = (inputsA.useSSF || inputsB.useSSF)
+    ? 'Retirement Fund (SSF + EPF + CIT + Gratuity)'
+    : 'Retirement Fund (EPF + CIT + Gratuity)';
 
   html += createRow('Allowable Tax Deductions:', 0, 0, true);
   html += createRow(retirementDeductionLabel, res82.allowedRetirementDeduction, res83.allowedRetirementDeduction, false, false, true);
@@ -1348,7 +1337,7 @@ function generateShareLink() {
   const params = new URLSearchParams();
   params.set('mode', currentViewMode);
   params.set('tab', currentTab);
-  params.set('ycotek', ycotekSwitch ? ycotekSwitch.selected : false);
+  params.set('modeY', modeYSwitch ? modeYSwitch.selected : false);
   params.set('diffMode', diffModeSelect.value);
 
   // Profile A inputs
@@ -1363,7 +1352,7 @@ function generateShareLink() {
   params.set('ssfA', ssfSwitchA.selected);
   params.set('epfA', epfSwitchA.selected);
   params.set('citA', citInputA.value);
-  params.set('gratuityA', ycotekGratuityA ? ycotekGratuityA.selected : true);
+  params.set('gratuityA', gratuityA ? gratuityA.selected : true);
   params.set('lifeA', lifeInputA.value);
   params.set('healthA', healthInputA.value);
   params.set('medicalA', medicalInputA.value);
@@ -1381,7 +1370,7 @@ function generateShareLink() {
   params.set('ssfB', ssfSwitchB.selected);
   params.set('epfB', epfSwitchB.selected);
   params.set('citB', citInputB.value);
-  params.set('gratuityB', ycotekGratuityB ? ycotekGratuityB.selected : true);
+  params.set('gratuityB', gratuityB ? gratuityB.selected : true);
   params.set('lifeB', lifeInputB.value);
   params.set('healthB', healthInputB.value);
   params.set('medicalB', medicalInputB.value);
@@ -1421,17 +1410,18 @@ function loadInputsFromUrl() {
     if (urlParams.has('tab')) currentTab = urlParams.get('tab');
     if (urlParams.has('diffMode')) diffModeSelect.value = urlParams.get('diffMode');
     
-    if (urlParams.has('ycotek') && ycotekSwitch) {
-      const isYcotek = urlParams.get('ycotek') === 'true';
-      ycotekSwitch.selected = isYcotek;
-      applyYcotekMode(isYcotek);
+    const hasModeY = urlParams.has('modeY') || urlParams.has('ycotek');
+    if (hasModeY && modeYSwitch) {
+      const isModeY = (urlParams.get('modeY') || urlParams.get('ycotek')) === 'true';
+      modeYSwitch.selected = isModeY;
+      applyModeY(isModeY);
     }
 
-    if (urlParams.has('gratuityA') && ycotekGratuityA) {
-      ycotekGratuityA.selected = urlParams.get('gratuityA') === 'true';
+    if (urlParams.has('gratuityA') && gratuityA) {
+      gratuityA.selected = urlParams.get('gratuityA') === 'true';
     }
-    if (urlParams.has('gratuityB') && ycotekGratuityB) {
-      ycotekGratuityB.selected = urlParams.get('gratuityB') === 'true';
+    if (urlParams.has('gratuityB') && gratuityB) {
+      gratuityB.selected = urlParams.get('gratuityB') === 'true';
     }
 
     // Profile A
@@ -1530,7 +1520,7 @@ function getCalculatorInputs(suffix) {
   const medicalEl = isA ? medicalInputA : medicalInputB;
   const femaleEl = isA ? femaleSwitchA : femaleSwitchB;
   const splitBonusEl = isA ? splitBonusSwitchA : splitBonusSwitchB;
-  const gratuityEl = isA ? ycotekGratuityA : ycotekGratuityB;
+  const gratuityEl = isA ? gratuityA : gratuityB;
 
   return {
     monthlyBasicSalary: parseFloat(basicEl.value) || 0,
@@ -1548,8 +1538,8 @@ function getCalculatorInputs(suffix) {
     medicalExpenses: parseFloat(medicalEl.value) || 0,
     femaleTaxpayer: femaleEl.selected,
     splitBonus: splitBonusEl.selected,
-    ycotekMode: ycotekSwitch ? ycotekSwitch.selected : false,
-    ycotekDepositGratuity: gratuityEl ? gratuityEl.selected : true
+    modeY: modeYSwitch ? modeYSwitch.selected : false,
+    depositGratuity: gratuityEl ? gratuityEl.selected : true
   };
 }
 
@@ -1654,18 +1644,15 @@ function updateNegoDetailedTable(resBase, resNego, inputsBase, inputsNego) {
   let html = '';
 
   // 1. Gross Earnings
-  const isYcotek = inputsBase.ycotekMode || inputsNego.ycotekMode;
-  const allowanceLabel = isYcotek ? 'Annual Allowances (Adjusted for Gratuity Carve-out)' : 'Annual Allowances';
+  const allowanceLabel = 'Annual Allowances (Adjusted for Gratuity Carve-out)';
 
   html += createRow('Gross Cash Salary components:', 0, 0, true);
   html += createRow('Annual Basic Salary', inputsBase.monthlyBasicSalary * 12, inputsNego.monthlyBasicSalary * 12);
   html += createRow(allowanceLabel, resBase.adjustedAllowancesAnnual, resNego.adjustedAllowancesAnnual);
 
-  if (isYcotek) {
-    const cashGratuityBase = inputsBase.ycotekDepositGratuity ? 0 : resBase.gratuityAnnual;
-    const cashGratuityNego = inputsNego.ycotekDepositGratuity ? 0 : resNego.gratuityAnnual;
-    html += createRow('Annual Gratuity (Paid in Cash)', cashGratuityBase, cashGratuityNego);
-  }
+  const cashGratuityBase = inputsBase.depositGratuity ? 0 : resBase.gratuityAnnual;
+  const cashGratuityNego = inputsNego.depositGratuity ? 0 : resNego.gratuityAnnual;
+  html += createRow('Annual Gratuity (Paid in Cash)', cashGratuityBase, cashGratuityNego);
 
   html += createRow('Annual Bonus / Festive Allowance', inputsBase.annualBonus, inputsNego.annualBonus);
   html += createRow('Annual Freelance / Consultancy Income', resBase.freelanceAnnual, resNego.freelanceAnnual);
@@ -1678,19 +1665,17 @@ function updateNegoDetailedTable(resBase, resNego, inputsBase, inputsNego) {
   html += createRow('Employer SSF (20% basic)', resBase.employerSSFAnnual, resNego.employerSSFAnnual);
   html += createRow('Employer EPF (10% basic)', resBase.employerEPFAnnual, resNego.employerEPFAnnual);
 
-  if (isYcotek) {
-    const depGratuityBase = inputsBase.ycotekDepositGratuity ? resBase.gratuityAnnual : 0;
-    const depGratuityNego = inputsNego.ycotekDepositGratuity ? resNego.gratuityAnnual : 0;
-    html += createRow('Employer Gratuity (8.33% basic deposited to CIT)', depGratuityBase, depGratuityNego);
-  }
+  const depGratuityBase = inputsBase.depositGratuity ? resBase.gratuityAnnual : 0;
+  const depGratuityNego = inputsNego.depositGratuity ? resNego.gratuityAnnual : 0;
+  html += createRow('Employer Gratuity (8.33% basic deposited to CIT)', depGratuityBase, depGratuityNego);
 
   html += createRow('Assessable Income (Tax Base)', resBase.assessableIncome, resNego.assessableIncome, false, true);
   html += createRow('Cost to Company (CTC)', resBase.costToCompany, resNego.costToCompany, false, true);
 
   // 3. Deductions
-  const retirementDeductionLabel = isYcotek
-    ? 'Retirement Fund (EPF + CIT + Gratuity)'
-    : 'Retirement Fund (SSF + EPF + CIT)';
+  const retirementDeductionLabel = (inputsBase.useSSF || inputsNego.useSSF)
+    ? 'Retirement Fund (SSF + EPF + CIT + Gratuity)'
+    : 'Retirement Fund (EPF + CIT + Gratuity)';
 
   html += createRow('Allowable Tax Deductions:', 0, 0, true);
   html += createRow(retirementDeductionLabel, resBase.allowedRetirementDeduction, resNego.allowedRetirementDeduction, false, false, true);
@@ -1735,10 +1720,10 @@ function triggerNegotiationRecalculation() {
   const year = (baseProfile === 'profileA_82') ? '2082_83' : '2083_84';
 
   const baseInputs = getCalculatorInputs(suffix);
-  const isYcotek = ycotekSwitch ? ycotekSwitch.selected : false;
+  const isModeY = modeYSwitch ? modeYSwitch.selected : false;
 
-  // Enforce Ycotek settings on base inputs if YCOTEK Mode is ON
-  if (isYcotek) {
+  // Enforce Mode Y settings on base inputs if Mode Y is ON
+  if (isModeY) {
     baseInputs.useSSF = false;
     baseInputs.useEPF = true;
     baseInputs.remoteArea = 'None';
@@ -1749,7 +1734,7 @@ function triggerNegotiationRecalculation() {
 
   // Calculate base offer results
   let baseCit = baseInputs.citMonthly;
-  if (isYcotek) {
+  if (isModeY) {
     baseCit = Math.max(0, baseCit - (baseInputs.monthlyBasicSalary * 0.10));
   }
   
@@ -1793,7 +1778,7 @@ function triggerNegotiationRecalculation() {
 
   // Calculate negotiated offer results
   let negoCitVal = baseInputs.citMonthly;
-  if (isYcotek) {
+  if (isModeY) {
     negoCitVal = Math.max(0, negoCitVal - (negoBasic * 0.10));
   }
 
